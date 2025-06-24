@@ -11,7 +11,7 @@ datasource db {
 
 model User {
   id        String  @id @default(uuid()) @db.Uuid
-  username  String
+  username  String  @unique
   password  String
   is_admin  Boolean @default(false)
   f_name    String

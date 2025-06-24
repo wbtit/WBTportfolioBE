@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
-import { errorHandler } from '../middlewares/globalErrorHandler.js'
+import { errorHandler } from '../src/middlewares/globalErrorHandler.js'
 import { routes } from './routes/index.js'
 
 
