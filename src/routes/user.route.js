@@ -1,4 +1,4 @@
-import { Authenticate } from "../middlewares/authmiddleware";
+import { Authenticate } from "../middlewares/authmiddleware.js";
 import { Router } from "express";
 import {signup,login,resetPassword} from "../controllers/users.js"
 
