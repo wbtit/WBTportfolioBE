@@ -1,0 +1,82 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [uuid_ossp(map: "uuid-ossp")]
+}
+
+model User {
+  id        String  @id @default(uuid()) @db.Uuid
+  username  String
+  password  String
+  is_admin  Boolean @default(false)
+  f_name    String
+  m_name    String
+  l_name    String
+}
+
+model Project {
+  id              String        @id @default(uuid()) @db.Uuid
+  title           String        @unique
+  description     String
+  location        String
+  type            ProjectType
+  technologyused  String
+  status          ProjectStatus
+  images          Json          @default("[]")
+
+  @@map("project")
+}
+
+model PortfolioWork {
+  id          String  @id @default(uuid()) @db.Uuid
+  title       String  @unique
+  description String
+  file        Json    @default("[]")
+  status      Boolean @default(false)
+
+  @@map("portfoliowork")
+}
+
+model JobRole {
+  id             String         @id @default(uuid()) @db.Uuid
+  Role           String
+  location       String
+  type           String
+  qualification  String
+  jd             Json           @default("[]")
+  status         Boolean        @default(false)
+  applications   Applications[] @relation("applicants")
+
+  @@map("jobrole")
+}
+
+model Applications {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  email     String
+  phone     String
+  resume    Json     @default("[]")
+  jbroleId  String   @db.Uuid
+  jobrole   JobRole  @relation("applicants", fields: [jbroleId], references: [id], onDelete: Cascade)
+}
+
+enum ProjectType {
+  INSTITUTE
+  COMMERCIAL
+  FACILITY_EXPRESSION
+  INDUSTRIAL
+  OTHER
+}
+
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  COMPLETED
+  ON_HOLD
+  CANCELLED
+}
