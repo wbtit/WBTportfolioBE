@@ -37,11 +37,9 @@ const login=async(req,res)=>{
             data:null
         })
     }
-    const userExists= await prisma.user.findUniue({
-        where:{
-            username
-        }
-    })
+      const userExists = await prisma.user.findUnique({
+    where: { username }
+  });
     if(!userExists){
         return res.status(400).json({
             message:"User do not Exists",
@@ -49,7 +47,9 @@ const login=async(req,res)=>{
             data:null
         })
     }
-    const isPasswordValid= await comaprePassword(password)
+    const normalizedPassword = typeof password === "number" ? password.toString() : password;
+
+    const isPasswordValid= await comaprePassword(normalizedPassword,userExists.password)
     if(isPasswordValid){
         const token= generateToken(userExists)
         return res.status(200).json({

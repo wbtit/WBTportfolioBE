@@ -5,8 +5,8 @@ import {signup,login,resetPassword} from "../controllers/users.js"
 
 const router= Router()
 
-router.post("/signup",Authenticate,signup)
-router.post("/login",Authenticate,login)
+router.post("/signup",signup)
+router.post("/login",login)
 router.post("/resetPassword",Authenticate,resetPassword)
 
 export {router as User}
