@@ -224,6 +224,37 @@ const updateProjectWithFile = async (req, res) => {
       data: updatedProject,
     });
 };
+const getSampleImages=async(req,res)=>{
+  const projects= await prisma.project.findMany()
+
+  const sampleFiles= projects.map(project=>{
+    if(project.images && project.images.length>0){
+      const file=project.images[0]
+      const filePath = path.join(process.cwd(), file.path);
+
+      if (fs.existsSync(filePath)) {
+            return {
+              projectId: project.id,
+              projectTitle: project.title,
+              file: {
+                id: file.id,
+                filename: file.filename,
+                path: file.path,
+                url: file.path,
+              },
+            };
+          }
+        }
+        return null;
+      })
+      .filter(Boolean); // remove nulls (projects with no files)
+
+    return res.status(200).json({
+      message: "Sample files from each project",
+      success: true,
+      data: sampleFiles,
+    });
+    }
 
 
 export {
@@ -233,5 +264,6 @@ export {
     // updateProject,
     deleteProject,
     viewProjectfiles,
-    updateProjectWithFile
+    updateProjectWithFile,
+    getSampleImages
 }

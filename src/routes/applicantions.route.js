@@ -10,7 +10,7 @@ import {
     viewapplicationfiles,
     updateApplicationWithFile,
     deleteApplication
-} from '../controllers/jobRole.js'
+} from '../controllers/applicants.js'
 
 const router=Router()
 

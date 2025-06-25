@@ -128,7 +128,7 @@ const getapplicationsById= async(req,res)=>{
 
 const deleteApplication=async(req,res)=>{
      const {jbroleId,applcationId}=req.params
-    if(!jobRoleId ||! applcationId){
+    if(!jbroleId ||! applcationId){
         return res.status(401).json({
             message:"jobRoleId and applcationId is required",
             success:false,
