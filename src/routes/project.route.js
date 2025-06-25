@@ -9,7 +9,8 @@ import {
     // updateProject,
     deleteProject,
     viewProjectfiles,
-    updateProjectWithFile
+    updateProjectWithFile,
+    getSampleImages
 } from '../controllers/project.js'
 
 const router=Router()
@@ -25,9 +26,10 @@ router.put(
   asyncHandler(updateProjectWithFile)//request in form-data
 );
 
+router.get("/sampleFiles",Authenticate,asyncHandler(getSampleImages))
 
 router.delete("/delete/:projectId",Authenticate,asyncHandler(deleteProject))
 router.get("/viewFile/:id/:fid",asyncHandler(viewProjectfiles))
 
 
-export{router as Project}
+export{router as Project} 

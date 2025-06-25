@@ -218,6 +218,9 @@ const updateJobRoleWithFile = async (req, res) => {
         ...(typeof status !== "undefined" && { status: status === "true" || status === true }),
         ...(newImages.length > 0 && { jd: newImages }), // only update if new files uploaded
       },
+      include:{
+         applications:true 
+      }
     });
 
     return res.status(200).json({
