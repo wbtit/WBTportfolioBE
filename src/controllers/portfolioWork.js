@@ -6,7 +6,7 @@ import mime from 'mime'
 
 const addportfolioWork=async(req,res)=>{
     const{title,description,status}=req.body
-    if(!title||!description||!status){
+    if(!title||!description){
         return res.status(401).json({
             message:"Feilds are empty",
             success:false,
@@ -26,7 +26,7 @@ const addportfolioWork=async(req,res)=>{
             data:null
         })
     }
-    const addPortfolioWork= await prisma.portfoliowork.create({
+    const addPortfolioWork= await prisma.PortfolioWork.create({
         data:{
             title,
             description,
@@ -41,7 +41,7 @@ const addportfolioWork=async(req,res)=>{
     })
 }
 const getAllPortfolioWorks=async(req,res)=>{
-    const getallportfolioworks= await prisma.portfoliowork.findMany()
+    const getallportfolioworks= await prisma.PortfolioWork.findMany()
     return res.status(200).json({
         message:"Fetched all portfolioWorks",
         success:true,
@@ -51,14 +51,14 @@ const getAllPortfolioWorks=async(req,res)=>{
 
 const getPortfolioWorkById= async(req,res)=>{
     const {portfolioWorkId}=req.params
-    if(!projectId){
+    if(!portfolioWorkId){
         return res.status(401).json({
             message:"projectId is required",
             success:false,
             data:null
         })
     }
-    const getportfoliowork= await prisma.portfoliowork.findUnique({
+    const getportfoliowork= await prisma.PortfolioWork.findUnique({
         where:{id:portfolioWorkId},
     })
     return res.status(200).json({
@@ -79,7 +79,7 @@ const getPortfolioWorkById= async(req,res)=>{
 //   }
 //  
 //     // Check if project exists
-//     const existingportfoliowork = await prisma.portfoliowork.findUnique({
+//     const existingportfoliowork = await prisma.PortfolioWork.findUnique({
 //       where: { id: portfolioWorkId },
 //     });
 
@@ -92,7 +92,7 @@ const getPortfolioWorkById= async(req,res)=>{
 //     }
 
 //     // Perform update
-//     const updatedportfolioWork = await prisma.portfoliowork.update({
+//     const updatedportfolioWork = await prisma.PortfolioWork.update({
 //       where: { id: portfolioWorkId },
 //       data: req.body,
 //     });
@@ -114,7 +114,7 @@ const deleteportfoliowork=async(req,res)=>{
             data:null
         })
     }
-    const deleteportfoliowork= await prisma.portfoliowork.delete({
+    const deleteportfoliowork= await prisma.PortfolioWork.delete({
         where:{id:portfolioWorkId},
     })
     return res.status(200).json({
@@ -127,7 +127,7 @@ const deleteportfoliowork=async(req,res)=>{
 
 const viewportfolioworkfiles = async (req, res) => {
   const { id, fid } = req.params;
-    const portfoliowork = await prisma.portfoliowork.findUnique({
+    const portfoliowork = await prisma.PortfolioWork.findUnique({
       where: { id },
     });
 
@@ -168,7 +168,7 @@ const updateportfolioworkWithFile = async (req, res) => {
     return res.status(400).json({ message: "portfolioworkId is required", success: false });
   }
 
-    const existingportfoliowork = await prisma.portfoliowork.findUnique({ where: { id: projectId } });
+    const existingportfoliowork = await prisma.PortfolioWork.findUnique({ where: { id: portfolioWorkId } });
 
     if (!existingportfoliowork) {
       return res.status(404).json({ message: "portfoliowork not found", success: false });
@@ -178,7 +178,7 @@ const updateportfolioworkWithFile = async (req, res) => {
 
     if (req.files && req.files.length > 0) {
       // Optional: remove old files from disk (careful!)
-      for (const file of existingProject.images) {
+      for (const file of existingportfoliowork.file) {
         const filePath = path.join(process.cwd(), file.path);
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath); // ⚠️ Deletes the file
@@ -193,7 +193,7 @@ const updateportfolioworkWithFile = async (req, res) => {
       }));
     }
 
-    const updatedportfoliowork = await prisma.portfoliowork.update({
+    const updatedportfoliowork = await prisma.PortfolioWork.update({
       where: { id: portfolioWorkId },
       data: {
         ...(title && { title }),

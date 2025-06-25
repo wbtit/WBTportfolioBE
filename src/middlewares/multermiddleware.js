@@ -2,7 +2,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
-import { updateProjectWithFile } from '../controllers/project';
+
 
 const UPLOAD_DIR = 'uploads/projectFiles';
 
@@ -55,7 +55,7 @@ const pwStorage= multer.diskStorage({
         const ext = path.extname(file.originalname);
         const newFileName = `${uniqueId}${ext}`;
 
-        updateProjectWithFile[newFileName]={
+        UploadedPortfolioFilesMap[newFileName]={
            originalname: file.originalname,
            uuid: uniqueId,
            mimetype: file.mimetype, 

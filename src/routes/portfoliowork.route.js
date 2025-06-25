@@ -1,7 +1,7 @@
 import { Authenticate } from "../middlewares/authmiddleware.js";
 import { Router } from "express";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import {uploads} from '../middlewares/multermiddleware.js'
+import {PWuploads} from '../middlewares/multermiddleware.js'
 import {
     addportfolioWork,
     getAllPortfolioWorks,
@@ -14,14 +14,14 @@ import {
 
 const router=Router()
 
-router.post("/create",Authenticate,uploads.array("file"),asyncHandler(addportfolioWork))
+router.post("/create",Authenticate,PWuploads.array("file"),asyncHandler(addportfolioWork))
 router.get("/all",Authenticate,asyncHandler(getAllPortfolioWorks))
 router.get("/:portfolioWorkId",Authenticate,asyncHandler(getPortfolioWorkById))
 // router.put("/update/:portfolioWorkId",Authenticate,asyncHandler(updatePortfolioWork))
 
 router.put(
   "/update/:portfolioWorkId",
-  uploads.array("images"), 
+  PWuploads.array("file"), 
   asyncHandler(updateportfolioworkWithFile)//request in form-data
 );
 
