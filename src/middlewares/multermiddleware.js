@@ -60,3 +60,34 @@ export const PWuploads = multer({
   storage: pwStorage,
   fileFilter: (req, file, cb) => cb(null, true),
 });
+
+
+// ----------------JobRole-----------------------
+const UPLOAD_DIR_JD = 'uploads/JobRoleFiles/';
+if (!fs.existsSync(UPLOAD_DIR_JD)) {
+  fs.mkdirSync(UPLOAD_DIR_JD, { recursive: true });
+}
+
+export const UploadedJDMap = {};
+
+const JDStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, UPLOAD_DIR_JD);
+  },
+  filename: (req, file, cb) => {
+    const uniqueId = uuidv4();
+    const ext = path.extname(file.originalname);
+    const newFileName = `${uniqueId}${ext}`;
+    UploadedJDMap[newFileName] = {
+      originalname: file.originalname,
+      uuid: uniqueId,
+      mimetype: file.mimetype,
+    };
+    cb(null, newFileName);
+  },
+});
+
+export const JDuploads = multer({
+  storage: JDStorage,
+  fileFilter: (req, file, cb) => cb(null, true),
+});
