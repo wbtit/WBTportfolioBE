@@ -14,20 +14,20 @@ import {
 
 const router=Router()
 
-router.post("/create",Authenticate,JDuploads.array("file"),asyncHandler(addJobRole))
+router.post("/create",Authenticate,JDuploads.array("jd"),asyncHandler(addJobRole))
 router.get("/all",Authenticate,asyncHandler(getAllJobRole))
 router.get("/:jobRoleId",Authenticate,asyncHandler(getJobRoleById))
 // router.put("/update/:jobRoleId",Authenticate,asyncHandler(updatePortfolioWork))
 
 router.put(
   "/update/:jobRoleId",
-  JDuploads.array("file"), 
-  asyncHandler(viewJobrolefiles)//request in form-data
+  JDuploads.array("jd"), 
+  asyncHandler(updateJobRoleWithFile)//request in form-data
 );
 
 
-router.delete("/delete/:jobRoleId",Authenticate,asyncHandler(updateJobRoleWithFile))
-router.get("/viewFile/:id/:fid",asyncHandler(deleteJobRole))
+router.delete("/delete/:jobRoleId",Authenticate,asyncHandler(deleteJobRole))
+router.get("/viewFile/:id/:fid",asyncHandler(viewJobrolefiles))
 
 
-export{router as PortfolioWork}
+export{router as JobRole}

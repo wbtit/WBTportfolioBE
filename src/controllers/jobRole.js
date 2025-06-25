@@ -4,39 +4,50 @@ import fs from 'fs'
 import mime from 'mime'
 
 
-const addJobRole=async(req,res)=>{
-    const{Role,location,type,qualification,status}=req.body
-    if(!Role||!location||!type||!qualification||!status){
-        return res.status(401).json({
-            message:"Feilds are empty",
-            success:false,
-            data:null
-        })
-    }
-    const fileDetailes= req.files.map((file)=>({
-        filename:file.filename,
-        originalName:file.originalname,
-        id:file.filename.split(".")[0],
-        path:`/uploads/portfolioWorkFiles/${file.filename}`
-    }))
-    if(!fileDetailes){
-        return res.status(400).json({
-            message:"failed to fetch the file detailes",
-            success:false,
-            data:null
-        })
-    }
-    const addjobrole= await prisma.JobRole.create({
-        data:{
-            Role,location,type,qualification,status,jd:fileDetailes
-        }
-    })
-    return res.status(200).json({
-        message:"jobrole added successfully",
-        success:true,
-        data:addPortfolioWork
-    })
-}
+const addJobRole = async (req, res) => {
+  const { Role, location, type, qualification, status } = req.body;
+
+  if (!Role || !location || !type || !qualification || status === undefined) {
+    return res.status(401).json({
+      message: "Fields are empty",
+      success: false,
+      data: null,
+    });
+  }
+
+  const fileDetailes = req.files.map((file) => ({
+    filename: file.filename,
+    originalName: file.originalname,
+    id: file.filename.split(".")[0],
+    path: `/uploads/JobRoleFiles/${file.filename}`,
+  }));
+
+  if (!fileDetailes || fileDetailes.length === 0) {
+    return res.status(400).json({
+      message: "Failed to fetch the file details",
+      success: false,
+      data: null,
+    });
+  }
+
+  const addjobrole = await prisma.jobRole.create({
+    data: {
+      Role,
+      location,
+      type,
+      qualification,
+      status: status === "true" || status === true, // in case it comes as string
+      jd: fileDetailes,
+    },
+  });
+
+  return res.status(200).json({
+    message: "Job role added successfully",
+    success: true,
+    data: addjobrole,
+  });
+};
+
 const getAllJobRole=async(req,res)=>{
     const getalljobrole= await prisma.JobRole.findMany({
         include:{
@@ -182,7 +193,7 @@ const updateJobRoleWithFile = async (req, res) => {
 
     if (req.files && req.files.length > 0) {
       // Optional: remove old files from disk (careful!)
-      for (const file of existingportfoliowork.file) {
+      for (const file of existingJobRole.jd) {
         const filePath = path.join(process.cwd(), file.path);
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath); // ⚠️ Deletes the file
@@ -198,13 +209,13 @@ const updateJobRoleWithFile = async (req, res) => {
     }
 
     const updatedjobrole = await prisma.JobRole.update({
-      where: { id: portfolioWorkId },
+      where: { id: jobRoleId },
       data: {
         ...(Role && { Role }),
         ...(location && { location }),
         ...(type && { type }),
         ...(qualification && { qualification}),
-        ...(status && {status}),
+        ...(typeof status !== "undefined" && { status: status === "true" || status === true }),
         ...(newImages.length > 0 && { jd: newImages }), // only update if new files uploaded
       },
     });
