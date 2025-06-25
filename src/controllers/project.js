@@ -137,8 +137,6 @@ const deleteProject=async(req,res)=>{
 
 const viewProjectfiles = async (req, res) => {
   const { id, fid } = req.params;
-
-  try {
     const project = await prisma.project.findUnique({
       where: { id },
     });
@@ -168,12 +166,7 @@ const viewProjectfiles = async (req, res) => {
     );
 
     fs.createReadStream(filePath).pipe(res);
-  } catch (error) {
-    console.error("View File Error:", error);
-    return res.status(500).json({
-      message: "Something went wrong while viewing the file",
-    });
-  }
+ 
 };
 
 
@@ -185,7 +178,7 @@ const updateProjectWithFile = async (req, res) => {
     return res.status(400).json({ message: "projectId is required", success: false });
   }
 
-  try {
+  
     const existingProject = await prisma.project.findUnique({ where: { id: projectId } });
 
     if (!existingProject) {
@@ -229,10 +222,6 @@ const updateProjectWithFile = async (req, res) => {
       success: true,
       data: updatedProject,
     });
-  } catch (error) {
-    console.error("Error updating project:", error);
-    return res.status(500).json({ message: "Failed to update project", success: false });
-  }
 };
 
 
