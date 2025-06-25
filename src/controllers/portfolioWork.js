@@ -15,7 +15,7 @@ const addportfolioWork=async(req,res)=>{
     }
     const fileDetailes= req.files.map((file)=>({
         filename:file.filename,
-        originalName:file.originalName,
+        originalName:file.originalname,
         id:file.filename.split(".")[0],
         path:`/uploads/portfolioWorkFiles/${file.filename}`
     }))
