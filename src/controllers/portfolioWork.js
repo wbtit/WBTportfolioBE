@@ -30,7 +30,7 @@ const addportfolioWork=async(req,res)=>{
         data:{
             title,
             description,
-            status,
+            status: status === "true" || status === true,
             file:fileDetailes
         }
     })
@@ -198,7 +198,7 @@ const updateportfolioworkWithFile = async (req, res) => {
       data: {
         ...(title && { title }),
         ...(description && { description }),
-        ...(status && { status }),
+        ...(typeof status !== "undefined" && { status: status === "true" || status === true }),
         ...(newImages.length > 0 && { file: newImages }), // only update if new files uploaded
       },
     });

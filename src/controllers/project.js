@@ -31,7 +31,7 @@ const addproject=async(req,res)=>{
             location,
             type,
             technologyused,
-            status,
+             status: status === "true" || status === true,
             images:fileDetailes
         }
     })
@@ -212,7 +212,7 @@ const updateProjectWithFile = async (req, res) => {
         ...(location && { location }),
         ...(type && { type }),
         ...(technologyused && { technologyused }),
-        ...(status && { status }),
+       ...(typeof status !== "undefined" && { status: status === "true" || status === true }),
         ...(newImages.length > 0 && { images: newImages }), // only update if new files uploaded
       },
     });
