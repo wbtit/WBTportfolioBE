@@ -5,6 +5,6 @@ import { Project } from "./project.route.js";
 const routes= Router()
 
 routes.use("/user",User)
-routes.use("/Project",Project)
+routes.use("/project",Project)
 
 export {routes}

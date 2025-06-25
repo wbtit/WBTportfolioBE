@@ -3,6 +3,7 @@ import { generateToken } from "../utils/generateToken.js";
 import { hashPassword,comaprePassword } from "../utils/managePassword.js";
 
 const signup=async(req,res)=>{
+    
     const{username,password,f_name,m_name,l_name}=req.body
     if(!username||!password||!f_name||!m_name||!l_name){
         return res.status(401).json({
@@ -28,6 +29,7 @@ const signup=async(req,res)=>{
     })
 }
 const login=async(req,res)=>{
+    // console.log(req.body)
     const{username,password}=req.body
 
     if(!username||!password){
