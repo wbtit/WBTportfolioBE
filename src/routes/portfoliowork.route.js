@@ -3,31 +3,31 @@ import { Router } from "express";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {uploads} from '../middlewares/multermiddleware.js'
 import {
-    addproject,
-    getAllProjects,
-    getProjectById,
-    // updateProject,
-    deleteProject,
-    viewProjectfiles,
-    updateProjectWithFile
-} from '../controllers/project.js'
+    addportfolioWork,
+    getAllPortfolioWorks,
+    getPortfolioWorkById,
+    // updatePortfolioWork,
+    deleteportfoliowork,
+    viewportfolioworkfiles,
+    updateportfolioworkWithFile
+} from '../controllers/portfolioWork.js'
 
 const router=Router()
 
-router.post("/create",Authenticate,uploads.array("images"),asyncHandler(addproject))
-router.get("/all",Authenticate,asyncHandler(getAllProjects))
-router.get("/:projectId",Authenticate,asyncHandler(getProjectById))
-// router.put("/update/:projectId",Authenticate,asyncHandler(updateProject))
+router.post("/create",Authenticate,uploads.array("file"),asyncHandler(addportfolioWork))
+router.get("/all",Authenticate,asyncHandler(getAllPortfolioWorks))
+router.get("/:portfolioWorkId",Authenticate,asyncHandler(getPortfolioWorkById))
+// router.put("/update/:portfolioWorkId",Authenticate,asyncHandler(updatePortfolioWork))
 
 router.put(
-  "/update/:projectId",
+  "/update/:portfolioWorkId",
   uploads.array("images"), 
-  asyncHandler(updateProjectWithFile)//request in form-data
+  asyncHandler(updateportfolioworkWithFile)//request in form-data
 );
 
 
-router.delete("/delete/:projectId",Authenticate,asyncHandler(deleteProject))
-router.get("/viewFile/:id/:fid",asyncHandler(viewProjectfiles))
+router.delete("/delete/:portfolioWorkId",Authenticate,asyncHandler(deleteportfoliowork))
+router.get("/viewFile/:id/:fid",asyncHandler(viewportfolioworkfiles))
 
 
-export{router as Project}
+export{router as PortfolioWork}
