@@ -2,6 +2,7 @@ import prisma from "../db/prismaClient.js";
 import path from "path";
 import fs from 'fs'
 import mime from 'mime'
+
 const addproject=async(req,res)=>{
     const{title,description,location,type,technologyused,status}=req.body
     if(!title||!description||!location||!type||!technologyused||!status){
