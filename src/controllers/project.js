@@ -68,51 +68,51 @@ const getProjectById= async(req,res)=>{
         data:getProject
     })
 }
-const updateProject = async (req, res) => {
-  const { projectId } = req.params;
+// const updateProject = async (req, res) => {
+//   const { projectId } = req.params;
 
-  if (!projectId) {
-    return res.status(400).json({
-      message: "projectId is required",
-      success: false,
-      data: null,
-    });
-  }
+//   if (!projectId) {
+//     return res.status(400).json({
+//       message: "projectId is required",
+//       success: false,
+//       data: null,
+//     });
+//   }
 
-  try {
-    // Check if project exists
-    const existingProject = await prisma.project.findUnique({
-      where: { id: projectId },
-    });
+//   try {
+//     // Check if project exists
+//     const existingProject = await prisma.project.findUnique({
+//       where: { id: projectId },
+//     });
 
-    if (!existingProject) {
-      return res.status(404).json({
-        message: "Project not found",
-        success: false,
-        data: null,
-      });
-    }
+//     if (!existingProject) {
+//       return res.status(404).json({
+//         message: "Project not found",
+//         success: false,
+//         data: null,
+//       });
+//     }
 
-    // Perform update
-    const updatedProject = await prisma.project.update({
-      where: { id: projectId },
-      data: req.body,
-    });
+//     // Perform update
+//     const updatedProject = await prisma.project.update({
+//       where: { id: projectId },
+//       data: req.body,
+//     });
 
-    return res.status(200).json({
-      message: "Project updated successfully",
-      success: true,
-      data: updatedProject,
-    });
-  } catch (error) {
-    console.error("Update error:", error);
-    return res.status(500).json({
-      message: "Failed to update project",
-      success: false,
-      data: null,
-    });
-  }
-};
+//     return res.status(200).json({
+//       message: "Project updated successfully",
+//       success: true,
+//       data: updatedProject,
+//     });
+//   } catch (error) {
+//     console.error("Update error:", error);
+//     return res.status(500).json({
+//       message: "Failed to update project",
+//       success: false,
+//       data: null,
+//     });
+//   }
+// };
 
 
 const deleteProject=async(req,res)=>{
@@ -177,11 +177,71 @@ const viewProjectfiles = async (req, res) => {
 };
 
 
+const updateProjectWithFile = async (req, res) => {
+  const { projectId } = req.params;
+  const { title, description, location, type, technologyused, status } = req.body;
+
+  if (!projectId) {
+    return res.status(400).json({ message: "projectId is required", success: false });
+  }
+
+  try {
+    const existingProject = await prisma.project.findUnique({ where: { id: projectId } });
+
+    if (!existingProject) {
+      return res.status(404).json({ message: "Project not found", success: false });
+    }
+
+    let newImages = [];
+
+    if (req.files && req.files.length > 0) {
+      // Optional: remove old files from disk (careful!)
+      for (const file of existingProject.images) {
+        const filePath = path.join(process.cwd(), file.path);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath); // ⚠️ Deletes the file
+        }
+      }
+
+      newImages = req.files.map((file) => ({
+        filename: file.filename,
+        originalName: file.originalname,
+        id: file.filename.split(".")[0],
+        path: `/uploads/projectFiles/${file.filename}`,
+      }));
+    }
+
+    const updatedProject = await prisma.project.update({
+      where: { id: projectId },
+      data: {
+        ...(title && { title }),
+        ...(description && { description }),
+        ...(location && { location }),
+        ...(type && { type }),
+        ...(technologyused && { technologyused }),
+        ...(status && { status }),
+        ...(newImages.length > 0 && { images: newImages }), // only update if new files uploaded
+      },
+    });
+
+    return res.status(200).json({
+      message: "Project updated successfully",
+      success: true,
+      data: updatedProject,
+    });
+  } catch (error) {
+    console.error("Error updating project:", error);
+    return res.status(500).json({ message: "Failed to update project", success: false });
+  }
+};
+
+
 export {
     addproject,
     getAllProjects,
     getProjectById,
-    updateProject,
+    // updateProject,
     deleteProject,
-    viewProjectfiles
+    viewProjectfiles,
+    updateProjectWithFile
 }
