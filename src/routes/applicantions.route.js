@@ -1,7 +1,7 @@
 import { Authenticate } from "../middlewares/authmiddleware.js";
 import { Router } from "express";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import {JDuploads} from '../middlewares/multermiddleware.js'
+import {Applications} from '../middlewares/multermiddleware.js'
 import {
     addApplicant,
     getAllApplicationByJD,
@@ -14,14 +14,14 @@ import {
 
 const router=Router()
 
-router.post("/create/:jbroleId",Authenticate,JDuploads.array("resume"),asyncHandler(addApplicant))
+router.post("/create/:jbroleId",Authenticate,Applications.array("resume"),asyncHandler(addApplicant))
 router.get("/all/:jbroleId",Authenticate,asyncHandler(getAllApplicationByJD))
 router.get("/:jbroleId/:applcationId",Authenticate,asyncHandler(getapplicationsById))
 // router.put("/update/:jbroleId/:applcationId",Authenticate,asyncHandler(updateapplication))
 
 router.put(
   "/update/:jbroleId/:applcationId",
-  JDuploads.array("resume"), 
+  Applications.array("resume"), 
   asyncHandler(updateApplicationWithFile)//request in form-data
 );
 

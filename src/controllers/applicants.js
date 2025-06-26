@@ -191,7 +191,7 @@ const updateApplicationWithFile = async (req, res) => {
     return res.status(400).json({ message: "jobRoleId and applcationId is required", success: false });
   }
 
-    const existingJobRole = await prisma.JobRole.findUnique({ where: { id: applcationId } });
+    const existingJobRole = await prisma.Applications.findUnique({ where: { id: applcationId,jbroleId:jbroleId } });
 
     if (!existingJobRole) {
       return res.status(404).json({ message: "application not found", success: false });
@@ -216,7 +216,7 @@ const updateApplicationWithFile = async (req, res) => {
       }));
     }
 
-    const updatedjobrole = await prisma.JobRole.update({
+    const updatedjobrole = await prisma.Applications.update({
       where: { id: applcationId,
         jbroleId
        },
