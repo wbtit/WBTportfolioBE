@@ -49,7 +49,7 @@ const addJobRole = async (req, res) => {
 };
 
 const getAllJobRole=async(req,res)=>{
-    const getalljobrole= await prisma.JobRole.findMany({
+    const getalljobrole= await prisma.jobRole.findMany({
         include:{
            applications:true 
         }
@@ -70,7 +70,7 @@ const getJobRoleById= async(req,res)=>{
             data:null
         })
     }
-    const getJobRole= await prisma.JobRole.findUnique({
+    const getJobRole= await prisma.jobRole.findUnique({
         where:{id:jobRoleId},
         include:{
            applications:true 
@@ -94,7 +94,7 @@ const getJobRoleById= async(req,res)=>{
 //   }
 //  
 //     // Check if project exists
-//     const existingJobRole = await prisma.JobRole.findUnique({
+//     const existingJobRole = await prisma.jobRole.findUnique({
 //       where: { id: jobRoleId },
 //     });
 
@@ -107,7 +107,7 @@ const getJobRoleById= async(req,res)=>{
 //     }
 
 //     // Perform update
-//     const updatedJobRole = await prisma.JobRole.update({
+//     const updatedJobRole = await prisma.jobRole.update({
 //       where: { id: jobRoleId },
 //       data: req.body,
 //     });
@@ -129,7 +129,7 @@ const deleteJobRole=async(req,res)=>{
             data:null
         })
     }
-    const deleteJobRole= await prisma.JobRole.delete({
+    const deleteJobRole= await prisma.jobRole.delete({
         where:{id:jobRoleId},
     })
     return res.status(200).json({
@@ -142,7 +142,7 @@ const deleteJobRole=async(req,res)=>{
 
 const viewJobrolefiles = async (req, res) => {
   const { id, fid } = req.params;
-    const jobrole = await prisma.JobRole.findUnique({
+    const jobrole = await prisma.jobRole.findUnique({
       where: { id },
     });
 
@@ -183,7 +183,7 @@ const updateJobRoleWithFile = async (req, res) => {
     return res.status(400).json({ message: "jobRoleId is required", success: false });
   }
 
-    const existingJobRole = await prisma.JobRole.findUnique({ where: { id: jobRoleId } });
+    const existingJobRole = await prisma.jobRole.findUnique({ where: { id: jobRoleId } });
 
     if (!existingJobRole) {
       return res.status(404).json({ message: "JobRole not found", success: false });
@@ -208,7 +208,7 @@ const updateJobRoleWithFile = async (req, res) => {
       }));
     }
 
-    const updatedjobrole = await prisma.JobRole.update({
+    const updatedjobrole = await prisma.jobRole.update({
       where: { id: jobRoleId },
       data: {
         ...(Role && { Role }),

@@ -26,7 +26,7 @@ const addportfolioWork=async(req,res)=>{
             data:null
         })
     }
-    const addPortfolioWork= await prisma.PortfolioWork.create({
+    const addPortfolioWork= await prisma.portfolioWork.create({
         data:{
             title,
             description,
@@ -41,7 +41,7 @@ const addportfolioWork=async(req,res)=>{
     })
 }
 const getAllPortfolioWorks=async(req,res)=>{
-    const getallportfolioworks= await prisma.PortfolioWork.findMany()
+    const getallportfolioworks= await prisma.portfolioWork.findMany()
     return res.status(200).json({
         message:"Fetched all portfolioWorks",
         success:true,
@@ -58,7 +58,7 @@ const getPortfolioWorkById= async(req,res)=>{
             data:null
         })
     }
-    const getportfoliowork= await prisma.PortfolioWork.findUnique({
+    const getportfoliowork= await prisma.portfolioWork.findUnique({
         where:{id:portfolioWorkId},
     })
     return res.status(200).json({
@@ -79,7 +79,7 @@ const getPortfolioWorkById= async(req,res)=>{
 //   }
 //  
 //     // Check if project exists
-//     const existingportfoliowork = await prisma.PortfolioWork.findUnique({
+//     const existingportfoliowork = await prisma.portfoliowork.findUnique({
 //       where: { id: portfolioWorkId },
 //     });
 
@@ -92,7 +92,7 @@ const getPortfolioWorkById= async(req,res)=>{
 //     }
 
 //     // Perform update
-//     const updatedportfolioWork = await prisma.PortfolioWork.update({
+//     const updatedportfolioWork = await prisma.portfolioWork.update({
 //       where: { id: portfolioWorkId },
 //       data: req.body,
 //     });
@@ -114,7 +114,7 @@ const deleteportfoliowork=async(req,res)=>{
             data:null
         })
     }
-    const deleteportfoliowork= await prisma.PortfolioWork.delete({
+    const deleteportfoliowork= await prisma.portfolioWork.delete({
         where:{id:portfolioWorkId},
     })
     return res.status(200).json({
@@ -127,7 +127,7 @@ const deleteportfoliowork=async(req,res)=>{
 
 const viewportfolioworkfiles = async (req, res) => {
   const { id, fid } = req.params;
-    const portfoliowork = await prisma.PortfolioWork.findUnique({
+    const portfoliowork = await prisma.portfolioWork.findUnique({
       where: { id },
     });
 
@@ -168,7 +168,7 @@ const updateportfolioworkWithFile = async (req, res) => {
     return res.status(400).json({ message: "portfolioworkId is required", success: false });
   }
 
-    const existingportfoliowork = await prisma.PortfolioWork.findUnique({ where: { id: portfolioWorkId } });
+    const existingportfoliowork = await prisma.portfolioWork.findUnique({ where: { id: portfolioWorkId } });
 
     if (!existingportfoliowork) {
       return res.status(404).json({ message: "portfoliowork not found", success: false });
@@ -193,7 +193,7 @@ const updateportfolioworkWithFile = async (req, res) => {
       }));
     }
 
-    const updatedportfoliowork = await prisma.PortfolioWork.update({
+    const updatedportfoliowork = await prisma.portfolioWork.update({
       where: { id: portfolioWorkId },
       data: {
         ...(title && { title }),
