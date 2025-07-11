@@ -29,7 +29,7 @@ const signup=async(req,res)=>{
     })
 }
 const login=async(req,res)=>{
-    // console.log(req.body)
+     //console.log("I got the Hit")
     const{username,password}=req.body
 
     if(!username||!password){

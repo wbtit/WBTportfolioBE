@@ -2,38 +2,74 @@ import prisma from "../db/prismaClient.js";
 import path from "path";
 import fs from 'fs'
 import mime from 'mime'
+import { cloudinary } from "../config/loudinaryConfig.js";
+
 
 const addproject=async(req,res)=>{
-    const{title,description,location,type,technologyused,status}=req.body
-    if(!title||!description||!location||!type||!technologyused||!status){
+    const{title,description,location,type,technologyused,status,department}=req.body
+    if(!title||!description||!location||!type||!technologyused||!status||!department){
         return res.status(401).json({
             message:"Feilds are empty",
             success:false,
             data:null
         })
     }
-    const fileDetailes= req.files.map((file)=>({
-        filename:file.filename,
-        originalName:file.originalname,
-        id:file.filename.split(".")[0],
-        path:`/uploads/projectFiles/${file.filename}`
-    }))
-    if(!fileDetailes){
+
+    if(!req.files || req.files.length === 0){
         return res.status(400).json({
-            message:"failed to fetch the file detailes",
-            success:false,
-            data:null
+          message:"Images are not uploaded",
+          success:false,
+          data:null
         })
+    }
+    
+    const uploadPromises=[]
+
+    req.files.forEach(file => {
+        const filePath= file.path 
+        
+
+        uploadPromises.push(
+          cloudinary.uploader.upload(filePath, { 
+                folder: 'project_images',
+                quality: 'auto',      
+                fetch_format: 'auto', 
+            }).then(result=>{
+            return {
+              public_id:result.public_id,
+              secureUrl:result.secure_url, 
+              fileName:file.filename, 
+              originalName:file.originalname,
+              path:`/uploads/projectFiles/${file.filename}` 
+            
+            }
+          }).catch(error=>{
+            console.error("Cloudinary upload failed for file:", file.originalname, error)
+                return null;
+          })
+        )
+    });
+    const uploadedImages= await Promise.all(uploadPromises)
+    const successfullUploads= uploadedImages.filter(detail=>detail!== null)
+
+    if(successfullUploads.length === 0) {
+        // If all uploads failed, return an error.
+        return res.status(500).json({
+            message: "Failed to upload images to Cloudinary.",
+            success: false,
+            data: null
+        });
     }
     const addProject= await prisma.project.create({
         data:{
             title,
             description,
             location,
+            department,
             type,
             technologyused,
              status: status === "true" || status === true,
-            images:fileDetailes
+            images:successfullUploads
         }
     })
     return res.status(200).json({
@@ -173,7 +209,7 @@ const viewProjectfiles = async (req, res) => {
 
 const updateProjectWithFile = async (req, res) => {
   const { projectId } = req.params;
-  const { title, description, location, type, technologyused, status } = req.body;
+  const { title, description, location, type, technologyused, status,department } = req.body;
 
   if (!projectId) {
     return res.status(400).json({ message: "projectId is required", success: false });
@@ -188,22 +224,59 @@ const updateProjectWithFile = async (req, res) => {
 
     let newImages = [];
 
-    if (req.files && req.files.length > 0) {
-      // Optional: remove old files from disk (careful!)
-      for (const file of existingProject.images) {
-        const filePath = path.join(process.cwd(), file.path);
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath); // ⚠️ Deletes the file
-        }
-      }
+if(req.files && req.files.length > 0) {
 
-      newImages = req.files.map((file) => ({
-        filename: file.filename,
-        originalName: file.originalname,
-        id: file.filename.split(".")[0],
-        path: `/uploads/projectFiles/${file.filename}`,
-      }));
+      const deletePromises= existingProject.images.map(async(image)=>{
+        if(image.public_id){
+          try {
+            await cloudinary.uploader.destroy(image.public_id)
+          } catch (error) {
+            console.error(`Failed to delete image from the cloudinary public_id:${image.public_id}`)
+          }
+        }
+
+        if(image.path){
+          const localFilePath= path.join(process.cwd(),image.path)
+          if(fs.existsSync(localFilePath)){
+            try {
+              fs.unlinkSync(localFilePath)
+            } catch (error) {
+              console.error(`Failed to remove file from the Server with path : ${localFilePath}`)
+            }
+          }
+        }
+      })
+      await Promise.all(deletePromises)
+
+      const uploadPromises= req.files.map(async(file)=>{
+        const filePath= file.path
+        try {
+          const result= await cloudinary.uploader.upload(filePath,{
+            folder:'project_images'
+          })
+           return {
+                    public_id: result.public_id,
+                    secureUrl: result.secure_url,
+                    fileName: file.filename,
+                    originalName: file.originalname,
+                    path: `/uploads/projectFiles/${file.filename}` 
+                };
+        } catch (error) {
+          console.error("Cloudinary upload failed for file:", file.originalname, error);
+          return null
+        }
+      })
+      const uploadedImages = await Promise.all(uploadPromises);
+        newImages = uploadedImages.filter(detail => detail !== null);
+
+        if(newImages.length === 0 && req.files.length>0){
+          console.error("No new images were successfully uploaded to Cloudinary.");
+        }
+      if (newImages.length === 0 && req.files.length > 0) {
+            console.error("No new images were successfully uploaded to Cloudinary.");
+        }
     }
+     
 
     const updatedProject = await prisma.project.update({
       where: { id: projectId },
@@ -211,6 +284,7 @@ const updateProjectWithFile = async (req, res) => {
         ...(title && { title }),
         ...(description && { description }),
         ...(location && { location }),
+        ...(department && {department}),
         ...(type && { type }),
         ...(technologyused && { technologyused }),
        ...(typeof status !== "undefined" && { status: status === "true" || status === true }),

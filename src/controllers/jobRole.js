@@ -2,6 +2,8 @@ import prisma from "../db/prismaClient.js";
 import path from "path";
 import fs from 'fs'
 import mime from 'mime'
+import { cloudinary } from "../config/loudinaryConfig.js";
+import { error } from "console";
 
 
 const addJobRole = async (req, res) => {
@@ -15,20 +17,32 @@ const addJobRole = async (req, res) => {
     });
   }
 
-  const fileDetailes = req.files.map((file) => ({
-    filename: file.filename,
-    originalName: file.originalname,
-    id: file.filename.split(".")[0],
-    path: `/uploads/JobRoleFiles/${file.filename}`,
-  }));
+  const uplooadPromises=[]
 
-  if (!fileDetailes || fileDetailes.length === 0) {
-    return res.status(400).json({
-      message: "Failed to fetch the file details",
-      success: false,
-      data: null,
-    });
-  }
+  req.files.forEach(file=>{
+    const filePath=file.path
+
+    uplooadPromises.push(
+      cloudinary.Uploader.upload(filePath,{
+        folder:'jobRole_files',
+        quality:'auto',
+        fetch_format:'auto',
+      }).then(result=>{
+        return {
+          ublic_id:result.public_id,
+              secureUrl:result.secure_url, 
+              fileName:file.filename, 
+              originalName:file.originalname,
+              path:`/uploads/JobRoleFiles/${file.filename}` 
+        }
+      }).catch(error=>{
+        console.error("Cloudinary upload failed for file:", file.originalname, error)
+                return null;
+      })
+    )
+  })
+  const uploadFiles= await Promise.all(uplooadPromises)
+  const successfullUploads= uploadFiles.filter(detail=>detail!==null)
 
   const addjobrole = await prisma.jobRole.create({
     data: {
@@ -37,7 +51,7 @@ const addJobRole = async (req, res) => {
       type,
       qualification,
       status: status === "true" || status === true, // in case it comes as string
-      jd: fileDetailes,
+      jd: successfullUploads,
     },
   });
 
