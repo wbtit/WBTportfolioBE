@@ -1,7 +1,7 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
-}
+} 
 
 datasource db {
   provider   = "postgresql"
@@ -23,6 +23,7 @@ model Project {
   id              String        @id @default(uuid()) @db.Uuid
   title           String        @unique
   description     String
+  department      DEPT          @default(PEMB)
   location        String
   type            ProjectType
   technologyused  String
@@ -79,4 +80,8 @@ enum ProjectStatus {
   COMPLETED
   ON_HOLD
   CANCELLED
+}
+enum DEPT{
+  PEMB
+  STRUCTURAL
 }

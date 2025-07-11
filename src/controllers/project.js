@@ -3,11 +3,11 @@ import path from "path";
 import fs from 'fs'
 import mime from 'mime'
 import { cloudinary } from "../config/loudinaryConfig.js";
-import { error } from "console";
+
 
 const addproject=async(req,res)=>{
-    const{title,description,location,type,technologyused,status}=req.body
-    if(!title||!description||!location||!type||!technologyused||!status){
+    const{title,description,location,type,technologyused,status,department}=req.body
+    if(!title||!description||!location||!type||!technologyused||!status||!department){
         return res.status(401).json({
             message:"Feilds are empty",
             success:false,
@@ -28,9 +28,12 @@ const addproject=async(req,res)=>{
     req.files.forEach(file => {
         const filePath= file.path 
         
+
         uploadPromises.push(
           cloudinary.uploader.upload(filePath, { 
-                folder: 'project_images'
+                folder: 'project_images',
+                quality: 'auto',      
+                fetch_format: 'auto', 
             }).then(result=>{
             return {
               public_id:result.public_id,
@@ -62,6 +65,7 @@ const addproject=async(req,res)=>{
             title,
             description,
             location,
+            department,
             type,
             technologyused,
              status: status === "true" || status === true,
@@ -205,7 +209,7 @@ const viewProjectfiles = async (req, res) => {
 
 const updateProjectWithFile = async (req, res) => {
   const { projectId } = req.params;
-  const { title, description, location, type, technologyused, status } = req.body;
+  const { title, description, location, type, technologyused, status,department } = req.body;
 
   if (!projectId) {
     return res.status(400).json({ message: "projectId is required", success: false });
@@ -280,6 +284,7 @@ if(req.files && req.files.length > 0) {
         ...(title && { title }),
         ...(description && { description }),
         ...(location && { location }),
+        ...(department && {department}),
         ...(type && { type }),
         ...(technologyused && { technologyused }),
        ...(typeof status !== "undefined" && { status: status === "true" || status === true }),
