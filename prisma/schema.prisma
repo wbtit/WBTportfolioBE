@@ -27,7 +27,7 @@ model Project {
   type            ProjectType
   technologyused  String
   status          ProjectStatus
-  images          Json          @default("[]")
+  images          Json          @default("[]")  @db.JsonB 
 
   @@map("project")
 }
