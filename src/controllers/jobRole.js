@@ -2,8 +2,8 @@ import prisma from "../db/prismaClient.js";
 import path from "path";
 import fs from 'fs'
 import mime from 'mime'
-import { cloudinary } from "../config/loudinaryConfig.js";
-import { error } from "console";
+import { cloudinary } from "../config/cloudinaryConfig.js";
+
 
 
 const addJobRole = async (req, res) => {
@@ -23,13 +23,13 @@ const addJobRole = async (req, res) => {
     const filePath=file.path
 
     uplooadPromises.push(
-      cloudinary.Uploader.upload(filePath,{
+      cloudinary.uploader.upload(filePath,{
         folder:'jobRole_files',
         quality:'auto',
         fetch_format:'auto',
       }).then(result=>{
         return {
-          ublic_id:result.public_id,
+              public_id:result.public_id,
               secureUrl:result.secure_url, 
               fileName:file.filename, 
               originalName:file.originalname,
