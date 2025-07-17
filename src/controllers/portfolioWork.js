@@ -33,7 +33,7 @@ const addportfolioWork=async(req,res)=>{
           }
         }).catch(error=>{
           console.error("Cloudinary upload failed for file:", file.originalname, error)
-                return null;
+          return null;
         })
       )
     })
@@ -231,12 +231,22 @@ const updateportfolioworkWithFile = async (req, res) => {
             secureUrl: result.secure_url,
             fileName: file.filename,
             originalName: file.originalname,
-            path: `/uploads/projectFiles/${file.filename}`
+            path: `/uploads/portfolioWorkFiles/${file.filename}`
           }
         } catch (error) {
-          
+          console.error("Cloudinary upload failed for file:", file.originalname, error);
+          return null
         }
       })
+      const uploadedImages = await Promise.all(uploadPromises);
+        newImages = uploadedImages.filter(detail => detail !== null);
+
+        if(newImages.length === 0 && req.files.length>0){
+          console.error("No new images were successfully uploaded to Cloudinary.");
+        }
+      if (newImages.length === 0 && req.files.length > 0) {
+            console.error("No new images were successfully uploaded to Cloudinary.");
+        }
     }
 
     const updatedportfoliowork = await prisma.portfolioWork.update({
