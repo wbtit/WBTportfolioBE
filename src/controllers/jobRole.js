@@ -228,12 +228,34 @@ const updateJobRoleWithFile = async (req, res) => {
       })
       await Promise.all(deletePromises)
 
-      newImages = req.files.map((file) => ({
-        filename: file.filename,
-        originalName: file.originalname,
-        id: file.filename.split(".")[0],
-        path: `/uploads/JobRoleFiles/${file.filename}`,
-      }));
+      const uploadPromises=req.jd.map(async(file)=>{
+        const filepath=file.path
+        try {
+          const result = await cloudinary.uploader.upload(filepath,{
+            folder:'jobRole_files'
+          })
+          return {
+            public_id: result.public_id,
+            secureUrl: result.secure_url,
+            fileName: file.filename,
+            originalName: file.originalname,
+            path: `/uploads/jobRoleFiles/${file.filename}`
+          }
+        } catch (error) {
+          console.error("Cloudinary upload failed for file:", file.originalname, error);
+          return null
+        }
+      })
+
+      const uploadedImages = await Promise.all(uploadPromises);
+        newImages = uploadedImages.filter(detail => detail !== null);
+
+        if(newImages.length === 0 && req.files.length>0){
+          console.error("No new images were successfully uploaded to Cloudinary.");
+        }
+      if (newImages.length === 0 && req.files.length > 0) {
+            console.error("No new images were successfully uploaded to Cloudinary.");
+        }
     }
 
     const updatedjobrole = await prisma.jobRole.update({
