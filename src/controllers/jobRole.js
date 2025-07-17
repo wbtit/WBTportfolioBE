@@ -3,7 +3,7 @@ import path from "path";
 import fs from 'fs'
 import mime from 'mime'
 import { cloudinary } from "../config/loudinaryConfig.js";
-import { error } from "console";
+
 
 
 const addJobRole = async (req, res) => {
@@ -21,9 +21,8 @@ const addJobRole = async (req, res) => {
 
   req.files.forEach(file=>{
     const filePath=file.path
-+
     uplooadPromises.push(
-      cloudinary.Uploader.upload(filePath,{
+      cloudinary.uploader.upload(filePath,{
         folder:'jobRole_files',
         quality:'auto',
         fetch_format:'auto',
