@@ -21,7 +21,7 @@ const addJobRole = async (req, res) => {
 
   req.files.forEach(file=>{
     const filePath=file.path
-
++
     uplooadPromises.push(
       cloudinary.Uploader.upload(filePath,{
         folder:'jobRole_files',
@@ -207,12 +207,26 @@ const updateJobRoleWithFile = async (req, res) => {
 
     if (req.files && req.files.length > 0) {
       // Optional: remove old files from disk (careful!)
-      for (const file of existingJobRole.jd) {
-        const filePath = path.join(process.cwd(), file.path);
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath); // ⚠️ Deletes the file
+      const deletePromises=existingJobRole.jd.map(async(file)=>{
+        if(file.public_id){
+          try {
+            await cloudinary.uploader.destroy(file.public_id)
+          } catch (error) {
+            console.error(`Failed to delete image from the cloudinary public_id:${file.public_id}`)
+          }
         }
-      }
+        if(file.path){
+          const localFilePath=path.join(process.pwd(),file.path)
+          if(fs.existsSync(localFilePath)){
+            try {
+              fs.unlinkSync(localFilePath)
+            } catch (error) {
+              console.error(`Failed to remove file from the Server with path : ${localFilePath}`)
+            }
+          }
+        }
+      })
+      await Promise.all(deletePromises)
 
       newImages = req.files.map((file) => ({
         filename: file.filename,
