@@ -2,7 +2,8 @@ import prisma from "../db/prismaClient.js";
 import path from "path";
 import fs from 'fs'
 import mime from 'mime'
-
+import { cloudinary } from "../config/loudinaryConfig.js";
+import { error } from "console";
 
 const addApplicant = async (req, res) => {
   const { name,email,phone } = req.body;
@@ -16,27 +17,48 @@ const addApplicant = async (req, res) => {
     });
   }
 
-  const fileDetailes = req.files.map((file) => ({
-    filename: file.filename,
-    originalName: file.originalname,
-    id: file.filename.split(".")[0],
-    path: `/uploads/Applicants/${file.filename}`,
-  }));
+  const uploadPromises=[]
+  req.resume.forEach(file=>{
+    const filePath=file.path
 
-  if (!fileDetailes || fileDetailes.length === 0) {
-    return res.status(400).json({
-      message: "Failed to fetch the file details",
-      success: false,
-      data: null,
-    });
-  }
+    uploadPromises.push(
+      cloudinary.push(
+        cloudinary.uploader.upload(filePath,{
+          folder:"resume_files",
+          quality:'auto',
+          fetch_format:'auto',
+        }).then(result=>{
+          return {
+            public_id:result.public_id,
+            secureUrl:result.secureUrl,
+            filename:result.filename,
+            originalName:file.originalName,
+            path:`/uploads/Applicants/${file.filename}`
+          }
+        }).catch(error=>{
+          console.error("Cloudinary upload failed for file:", file.originalname, error)
+          return null;
+        })
+      )
+    )
+  })
+  const uploadeFiles= await Promise.all(uploadPromises)
+    const suuccessfullUploades=uploadeFiles.filter(detail=>detail!==null)
+
+    if(suuccessfullUploades.length===0){
+      return res.status(500).json({
+            message: "Failed to upload images to Cloudinary.",
+            success: false,
+            data: null
+        });
+    }
 
   const addapplicants = await prisma.applications.create({
     data: {
       name,
       email,
       phone,
-      resume:fileDetailes,
+      resume:suuccessfullUploades,
       jbroleId
     },
   });
@@ -200,20 +222,55 @@ const updateApplicationWithFile = async (req, res) => {
     let newImages = [];
 
     if (req.files && req.files.length > 0) {
-      // Optional: remove old files from disk (careful!)
-      for (const file of existingJobRole.resume) {
-        const filePath = path.join(process.cwd(), file.path);
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath); // ⚠️ Deletes the file
+      const deletePromises=existingportfoliowork.resume.map(async(file)=>{
+
+        if(file.public_id){
+          try {
+             await cloudinary.uploader.destroy(file.public_id)
+          } catch (error) {
+            console.error(`Failed to delete image from the cloudinary public_id:${file.public_id}`)
+          }
+        }
+      if(file.path){
+        const localFilePath= path.join(process.cwd(),file.path)
+        if(fs.existsSync(localFilePath)){
+          try {
+            fs.unlinkSync(localFilePath)
+          } catch (error) {
+            console.error(`Failed to remove file from the Server with path : ${localFilePath}`)
+          }
         }
       }
+      })
+      await Promise.all(deletePromises)
 
-      newImages = req.files.map((file) => ({
-        filename: file.filename,
-        originalName: file.originalname,
-        id: file.filename.split(".")[0],
-        path: `/uploads/Applicants/${file.filename}`,
-      }));
+      const uploadPromises=req.files.map(async(file)=>{
+        const filePath=file.path
+        try {
+          const result = await cloudinary.uploader.upload(filePath,{
+            folder:'portfolio_files'
+          })
+          return {
+            public_id: result.public_id,
+            secureUrl: result.secure_url,
+            fileName: file.filename,
+            originalName: file.originalname,
+            path: `/uploads/portfolioWorkFiles/${file.filename}`
+          }
+        } catch (error) {
+          console.error("Cloudinary upload failed for file:", file.originalname, error);
+          return null
+        }
+      })
+      const uploadedImages = await Promise.all(uploadPromises);
+        newImages = uploadedImages.filter(detail => detail !== null);
+
+        if(newImages.length === 0 && req.files.length>0){
+          console.error("No new images were successfully uploaded to Cloudinary.");
+        }
+      if (newImages.length === 0 && req.files.length > 0) {
+            console.error("No new images were successfully uploaded to Cloudinary.");
+        }
     }
 
     const updatedjobrole = await prisma.applications.update({
