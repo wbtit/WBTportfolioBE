@@ -2,7 +2,7 @@ import prisma from "../db/prismaClient.js";
 import path from "path";
 import fs from 'fs'
 import mime from 'mime'
-import { cloudinary } from "../config/loudinaryConfig.js";
+import { cloudinary } from "../config/cloudinaryConfig.js";
 
 
 const addportfolioWork=async(req,res)=>{
@@ -26,7 +26,7 @@ const addportfolioWork=async(req,res)=>{
         }).then(result=>{
           return{
             public_id:result.public_id,
-            secureUrl:result.secureUrl,
+            secureUrl:result.secure_url, // ✅ correct,
             filename:result.filename,
             originalName:file.originalName,
             path:`/uploads/portfolioWorkFiles/${file.filename}`

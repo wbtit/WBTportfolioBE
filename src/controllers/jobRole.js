@@ -2,7 +2,8 @@ import prisma from "../db/prismaClient.js";
 import path from "path";
 import fs from 'fs'
 import mime from 'mime'
-import { cloudinary } from "../config/loudinaryConfig.js";
+
+import { cloudinary } from "../config/cloudinaryConfig.js";
 
 
 
@@ -28,7 +29,7 @@ const addJobRole = async (req, res) => {
         fetch_format:'auto',
       }).then(result=>{
         return {
-          ublic_id:result.public_id,
+              public_id:result.public_id,
               secureUrl:result.secure_url, 
               fileName:file.filename, 
               originalName:file.originalname,
