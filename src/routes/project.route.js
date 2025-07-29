@@ -16,17 +16,17 @@ import {
 const router=Router()
 
 router.post("/create",Authenticate,uploads.array("images"),asyncHandler(addproject))
-router.get("/all",Authenticate,asyncHandler(getAllProjects))
-router.get("/:projectId",Authenticate,asyncHandler(getProjectById))
+router.get("/all",asyncHandler(getAllProjects))
+router.get("/:projectId",asyncHandler(getProjectById))
 // router.put("/update/:projectId",Authenticate,asyncHandler(updateProject))
 
-router.put(
+router.patch(
   "/update/:projectId",
   uploads.array("images"), 
   asyncHandler(updateProjectWithFile)//request in form-data
 );
 
-router.get("/sampleFiles",Authenticate,asyncHandler(getSampleImages))
+router.get("/sampleFiles/:department",asyncHandler(getSampleImages))
 
 router.delete("/delete/:projectId",Authenticate,asyncHandler(deleteProject))
 router.get("/viewFile/:id/:fid",asyncHandler(viewProjectfiles))

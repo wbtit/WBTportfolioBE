@@ -26,9 +26,11 @@ const addJobRole = async (req, res) => {
         folder:'jobRole_files',
         quality:'auto',
         fetch_format:'auto',
+        use_filename: true,        // Keep the original name
+          unique_filename: true,     // Or false, based on if you want unique names
       }).then(result=>{
         return {
-          ublic_id:result.public_id,
+              public_id:result.public_id,
               secureUrl:result.secure_url, 
               fileName:file.filename, 
               originalName:file.originalname,

@@ -23,12 +23,14 @@ const addportfolioWork=async(req,res)=>{
           folder:'portfolio_files',
           quality:'auto',
           fetch_format:'auto',
+          use_filename: true,        // Keep the original name
+          unique_filename: true,     // Or false, based on if you want unique names
         }).then(result=>{
           return{
             public_id:result.public_id,
-            secureUrl:result.secureUrl,
-            filename:result.filename,
-            originalName:file.originalName,
+            secureUrl:result.secure_url, 
+            fileName:file.filename, 
+            originalName:file.originalname,
             path:`/uploads/portfolioWorkFiles/${file.filename}`
           }
         }).catch(error=>{
@@ -82,6 +84,7 @@ const getPortfolioWorkById= async(req,res)=>{
     const getportfoliowork= await prisma.portfolioWork.findUnique({
         where:{id:portfolioWorkId},
     })
+    console.log(getportfoliowork)
     return res.status(200).json({
         message:"Fetched the portfolioWork by Id",
         success:true,
