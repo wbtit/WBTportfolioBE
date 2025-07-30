@@ -41,3 +41,6 @@ export const JDuploads = createMulterUploader("uploads/JobRoleFiles", UploadedJD
 
 export const UploadedApplicationMap={}
 export const Applications=createMulterUploader("uploads/Applicants",UploadedApplicationMap)
+
+export const UploadedBlogFiles={}
+export const blogFiles=createMulterUploader("uploads/blogFiles",UploadedBlogFiles)
