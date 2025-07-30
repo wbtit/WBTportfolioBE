@@ -1,8 +1,8 @@
-import prisma from "../db/prismaClient.js";
+import prisma from "../../db/prismaClient.js";
 import path from "path";
 import fs from 'fs'
 import mime from 'mime'
-import { cloudinary } from "../config/cloudinaryConfig.js";
+import { uploadFilesToCloudinary } from "../../utils/uploadFilesToCloudinary.js";
 
 
 const addportfolioWork=async(req,res)=>{
@@ -14,36 +14,7 @@ const addportfolioWork=async(req,res)=>{
             data:null
         })
     }
-    const uploadPromises=[]
-    req.files.forEach(file=>{
-      const filePath=file.path
-
-      uploadPromises.push(
-        cloudinary.uploader.upload(filePath,{
-          folder:'portfolio_files',
-          quality:'auto',
-          fetch_format:'auto',
-          use_filename: true,        // Keep the original name
-          unique_filename: true,     // Or false, based on if you want unique names
-          
-        }).then(result=>{
-          console.log(result)
-          return{
-            public_id:result.public_id,
-            secureUrl:result.secure_url, // ✅ correct,
-            filename:result.filename,
-            originalName:file.originalName,
-            fileId:file.filename,
-            path:`/uploads/portfolioWorkFiles/${file.filename}`,
-            id:result.id
-          }
-        }).catch(error=>{
-          console.error("Cloudinary upload failed for file:", file.originalname, error)
-          return null;
-        })
-      )
-    })
-    const uploadeFiles= await Promise.all(uploadPromises)
+    const uploadeFiles= await uploadFilesToCloudinary(req.files,"portfolio_files")
     const suuccessfullUploades=uploadeFiles.filter(detail=>detail!==null)
 
     if(suuccessfullUploades.length===0){

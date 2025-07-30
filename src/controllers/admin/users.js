@@ -1,6 +1,6 @@
-import prisma from "../db/prismaClient.js";
-import { generateToken } from "../utils/generateToken.js";
-import { hashPassword,comaprePassword } from "../utils/managePassword.js";
+import prisma from "../../db/prismaClient.js";
+import { generateToken } from "../../utils/generateToken.js";
+import { hashPassword,comaprePassword } from "../../utils/managePassword.js";
 
 const signup=async(req,res)=>{
     

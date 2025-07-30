@@ -1,0 +1,122 @@
+Based on your current Prisma schema — with `Post`, `Comment`, and `Category` models, and **no user model or user authentication** — here is a complete list of **API endpoints you should write**.
+
+---
+
+## 📌 Overview of Your Schema
+
+### Entities:
+
+* **Post** — title, content, files, likes, createdAt, etc.
+* **Comment** — nested, likes, associated with a post
+* **Category** — many-to-many with posts
+
+---
+
+## ✅ API ENDPOINTS
+
+### 📄 POST APIs
+
+| Method   | Endpoint          | Description                                                       |
+| -------- | ----------------- | ----------------------------------------------------------------- |
+| `GET`    | `/posts`          | Get all posts (optionally filter by category or search)           |
+| `GET`    | `/posts/:id`      | Get a single post by ID (with comments, categories)               |
+| `POST`   | `/posts`          | Create a new post                                                 |
+| `PUT`    | `/posts/:id`      | Update a post                                                     |
+| `DELETE` | `/posts/:id`      | Delete a post                                                     |
+| `PATCH`  | `/posts/:id/like` | Increment like count (one per user/IP if tracking is added later) |
+
+---
+
+### 💬 COMMENT APIs
+
+| Method   | Endpoint                  | Description                                             |
+| -------- | ------------------------- | ------------------------------------------------------- |
+| `GET`    | `/posts/:postId/comments` | Get all comments for a post (with nesting if needed)    |
+| `POST`   | `/posts/:postId/comments` | Add a comment to a post (with optional parentId)        |
+| `PUT`    | `/comments/:id`           | Edit a comment                                          |
+| `DELETE` | `/comments/:id`           | Delete a comment                                        |
+| `PATCH`  | `/comments/:id/like`      | Increment comment like count (same limitation as posts) |
+
+---
+
+### 🏷 CATEGORY APIs
+
+| Method   | Endpoint          | Description                          |
+| -------- | ----------------- | ------------------------------------ |
+| `GET`    | `/categories`     | List all categories                  |
+| `GET`    | `/categories/:id` | Get a category with associated posts |
+| `POST`   | `/categories`     | Create a category                    |
+| `PUT`    | `/categories/:id` | Update a category name               |
+| `DELETE` | `/categories/:id` | Delete a category                    |
+
+---
+
+### 🔍 OPTIONAL FILTERING / SORTING / SEARCH
+
+| Method | Endpoint                | Description                    |            |
+| ------ | ----------------------- | ------------------------------ | ---------- |
+| `GET`  | `/posts?categoryId=...` | Filter posts by category       |            |
+| `GET`  | `/posts?search=...`     | Search posts by title/content  |            |
+| `GET`  | \`/posts?sort=popular   | recent\`                       | Sort posts |
+| `GET`  | `/categories/:id/posts` | Get posts for a given category |            |
+
+---
+
+## 💡 ADVANCED / OPTIONAL FEATURES
+
+If you want to build more advanced features:
+
+### 👍 Like Deduplication (if using IP, cookie, or frontend tracking)
+
+| Method | Endpoint             | Description                                       |
+| ------ | -------------------- | ------------------------------------------------- |
+| `POST` | `/posts/:id/like`    | Like a post (with IP/user/cookie check if needed) |
+| `POST` | `/comments/:id/like` | Like a comment                                    |
+
+### 🧵 Nested Comments
+
+You can optionally support:
+
+| Method | Endpoint                | Description                              |
+| ------ | ----------------------- | ---------------------------------------- |
+| `GET`  | `/comments/:id/replies` | Get child comments of a specific comment |
+
+---
+
+## 🔐 USER-AWARE APIS (For the future)
+
+If you later add user accounts, you'll want:
+
+| Method | Endpoint          | Description                              |
+| ------ | ----------------- | ---------------------------------------- |
+| `GET`  | `/me/posts`       | List posts created by the logged-in user |
+| `GET`  | `/me/liked-posts` | Posts the user has liked                 |
+| `GET`  | `/me/comments`    | Comments by the user                     |
+
+---
+
+## 🔧 BONUS: Suggested Structure (for REST API)
+
+```bash
+/routes
+  /posts.js
+  /comments.js
+  /categories.js
+/controllers
+  postController.js
+  commentController.js
+  categoryController.js
+/services
+  postService.js
+  ...
+```
+
+---
+
+Would you like me to:
+
+* Generate OpenAPI specs for these?
+* Scaffold API route code (Node.js/Express or Next.js)?
+* Add pagination, validation, or example payloads?
+
+Let me know what tech stack you're using.

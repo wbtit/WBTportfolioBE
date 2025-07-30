@@ -10,7 +10,7 @@ import {
     viewapplicationfiles,
     updateApplicationWithFile,
     deleteApplication
-} from '../controllers/applicants.js'
+} from '../controllers/admin/applicants.js'
 
 const router=Router()
 
