@@ -1,5 +1,7 @@
 import prisma, { Prisma } from "../../db/prismaClient.js"
+import { updateCloudinaryFiles } from "../../utils/updateCloudinaryFiles.js"
 import { uploadFilesToCloudinary } from "../../utils/uploadFilesToCloudinary.js"
+
 
 const addpost=async(req,res)=>{
     const{title,content}=req.body
@@ -12,7 +14,7 @@ const addpost=async(req,res)=>{
 
     const uploadFiles= await uploadFilesToCloudinary(req.files,"blog_files")
     const successUploads=  uploadFiles.filter(detail=>detail!==null)
-    const post= await Prisma.Post.create({
+    const post= await Prisma.post.create({
         data:{
             title,
             content,
@@ -26,7 +28,7 @@ const addpost=async(req,res)=>{
 }
 
 const getPosts=async(req,res)=>{
-    const posts= await prisma.Post.findMany({
+    const posts= await prisma.post.findMany({
         include:{
             comments:true,
             categoryType:true,
@@ -49,7 +51,7 @@ const getPostById=async(req,res)=>{
             data:null
         })
     }
-    const postById= await prisma.Post.find({
+    const postById= await prisma.post.find({
         where:{id:postId},
         include:{
             comments:true,
@@ -66,5 +68,85 @@ const getPostById=async(req,res)=>{
 
 const updatePost=async(req,res)=>{
     const{postId}=req.params
-    const 
+    const {title,content,}=req.body
+
+    if(!postId){
+        return res.status(400).json({
+            message:"PostId is required",
+            data:null
+        })
+    }
+    const existingPost= await prisma.post.findUnique({where:{id:postId}})
+
+    if(!existingPost){
+        return res.status(404).json({message:"Post not found",data:null})
+    }
+    let newImages=[];
+    if (req.files && req.files.length > 0) {
+    newImages = await updateCloudinaryFiles(existingPost.files, req.files, "blog_files", "uploads/blogFiles");
+
+    if (newImages.length === 0) {
+      console.warn("No images were uploaded successfully.");
+    }
+  }
+    const updatePost= await prisma.post.update({
+        where:{id:postId},
+        data:{
+            ...(title && {title}),
+            ...(content && {content}),
+            ...(newImages.length >0 && {files:newImages}),
+        }
+    })
+    return res.status(200).json({
+        message:"Post updated successfully",
+        data:updatePost
+    })
+    
+}
+
+const deletePost= async(req,res)=>{
+    const{ postId}=req.params
+    if(!postId){
+        return res.status(400).json({
+            message:"Postid is required",
+            data:null
+        })
+    }
+    const deletePost= await prisma.post.delete({
+        where:{id:postId}
+    })
+    return res.status(200).json({
+        message:"Post got deleted successfully",
+        data:deletePost
+    })
+}
+
+const likePost=async(req,res)=>{
+    const{postId}=req.params
+    
+    if(!postId ||!likes){
+        return res.status(400).json({
+            message:"Fields are empty",
+            data:null
+        })
+    }
+    const likedPost= await prisma.post.update({
+        where:{id:postId},
+        data:{
+            likes:{increment:1}
+        }
+    })
+    return res.status(200).json({
+        message:"Post liked successfully",
+        data:likedPost
+    })
+}
+
+export{
+    addpost,
+    getPosts,
+    getPostById,
+    updatePost,
+    deletePost,
+    likePost
 }

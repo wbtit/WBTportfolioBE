@@ -183,59 +183,13 @@ const updateJobRoleWithFile = async (req, res) => {
     }
 
     let newImages = [];
+     if (req.files && req.files.length > 0) {
+    newImages = await updateCloudinaryFiles(existingJobRole.jd, req.files, "jobRole_files", "uploads/jobRoleFiles");
 
-    if (req.files && req.files.length > 0) {
-      // Optional: remove old files from disk (careful!)
-      const deletePromises=existingJobRole.jd.map(async(file)=>{
-        if(file.public_id){
-          try {
-            await cloudinary.uploader.destroy(file.public_id)
-          } catch (error) {
-            console.error(`Failed to delete image from the cloudinary public_id:${file.public_id}`)
-          }
-        }
-        if(file.path){
-          const localFilePath=path.join(process.pwd(),file.path)
-          if(fs.existsSync(localFilePath)){
-            try {
-              fs.unlinkSync(localFilePath)
-            } catch (error) {
-              console.error(`Failed to remove file from the Server with path : ${localFilePath}`)
-            }
-          }
-        }
-      })
-      await Promise.all(deletePromises)
-
-      const uploadPromises=req.jd.map(async(file)=>{
-        const filepath=file.path
-        try {
-          const result = await cloudinary.uploader.upload(filepath,{
-            folder:'jobRole_files'
-          })
-          return {
-            public_id: result.public_id,
-            secureUrl: result.secure_url,
-            fileName: file.filename,
-            originalName: file.originalname,
-            path: `/uploads/jobRoleFiles/${file.filename}`
-          }
-        } catch (error) {
-          console.error("Cloudinary upload failed for file:", file.originalname, error);
-          return null
-        }
-      })
-
-      const uploadedImages = await Promise.all(uploadPromises);
-        newImages = uploadedImages.filter(detail => detail !== null);
-
-        if(newImages.length === 0 && req.files.length>0){
-          console.error("No new images were successfully uploaded to Cloudinary.");
-        }
-      if (newImages.length === 0 && req.files.length > 0) {
-            console.error("No new images were successfully uploaded to Cloudinary.");
-        }
+    if (newImages.length === 0) {
+      console.warn("No images were uploaded successfully.");
     }
+  }
 
     const updatedjobrole = await prisma.jobRole.update({
       where: { id: jobRoleId },
