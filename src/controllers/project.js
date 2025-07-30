@@ -8,7 +8,7 @@ import { cloudinary } from "../config/cloudinaryConfig.js";
 const addproject=async(req,res)=>{
     const{title,description,location,type,technologyused,status,department}=req.body
     if(!title||!description||!location||!type||!technologyused||!status||!department){
-        return res.status(401).json({
+        return res.status(400).json({
             message:"Feilds are empty",
             success:false,
             data:null
@@ -68,7 +68,7 @@ const addproject=async(req,res)=>{
             department,
             type,
             technologyused,
-             status: status === "true" || status === true,
+             status,
             images:successfullUploads
         }
     })
@@ -90,7 +90,7 @@ const getAllProjects=async(req,res)=>{
 const getProjectById= async(req,res)=>{
     const {projectId}=req.params
     if(!projectId){
-        return res.status(401).json({
+        return res.status(400).json({
             message:"projectId is required",
             success:false,
             data:null
@@ -155,7 +155,7 @@ const getProjectById= async(req,res)=>{
 const deleteProject=async(req,res)=>{
      const {projectId}=req.params
     if(!projectId){
-        return res.status(401).json({
+        return res.status(400).json({
             message:"projectId is required",
             success:false,
             data:null
@@ -299,7 +299,10 @@ if(req.files && req.files.length > 0) {
     });
 };
 const getSampleImages=async(req,res)=>{
-  const projects= await prisma.project.findMany()
+  const{department}=req.params
+   const projects = await prisma.project.findMany({
+      where: { department },
+    });
 
   const sampleFiles= projects.map(project=>{
     if(project.images && project.images.length>0){
@@ -315,6 +318,7 @@ const getSampleImages=async(req,res)=>{
                 filename: file.filename,
                 path: file.path,
                 url: file.path,
+                secureUrl:file.secureUrl
               },
             };
           }

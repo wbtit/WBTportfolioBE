@@ -2,8 +2,8 @@ import prisma from "../db/prismaClient.js";
 import path from "path";
 import fs from 'fs'
 import mime from 'mime'
-import { cloudinary } from "../config/loudinaryConfig.js";
-import { error } from "console";
+import { cloudinary } from "../config/cloudinaryConfig.js";
+
 
 const addApplicant = async (req, res) => {
   const { name,email,phone } = req.body;

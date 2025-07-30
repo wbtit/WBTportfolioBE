@@ -15,7 +15,7 @@ import {
 const router=Router()
 
 router.post("/create",Authenticate,PWuploads.array("file"),asyncHandler(addportfolioWork))
-router.get("/all",Authenticate,asyncHandler(getAllPortfolioWorks))
+router.get("/all",asyncHandler(getAllPortfolioWorks))
 router.get("/:portfolioWorkId",Authenticate,asyncHandler(getPortfolioWorkById))
 // router.put("/update/:portfolioWorkId",Authenticate,asyncHandler(updatePortfolioWork))
 
