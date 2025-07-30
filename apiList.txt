@@ -1,0 +1,167 @@
+Great! Based on your current Prisma schema, you're modeling a **blog/forum-like platform** with:
+
+* `Post` (with files, likes, categories)
+* `Comment` (with nesting, likes)
+* `Category` (many-to-many with `Post`)
+
+---
+
+## ✅ API Endpoints You Should Implement
+
+I'll group them by model and include HTTP methods, routes, and a brief description of what each does.
+
+---
+
+### 📘 POST APIs
+
+#### 1. `GET /posts`
+
+* List all posts
+* Optional query params: `categoryId`, `search`, `sortBy`, `page`, `limit`
+
+#### 2. `GET /posts/:id`
+
+* Get a single post by ID (with comments and categories)
+
+#### 3. `POST /posts`
+
+* Create a new post
+  Payload:
+
+  ```json
+  {
+    "title": "Post Title",
+    "content": "Post content",
+    "files": [...],
+    "categoryIds": ["cat-id-1", "cat-id-2"]
+  }
+  ```
+
+#### 4. `PUT /posts/:id`
+
+* Update a post (title/content/files/categories)
+
+#### 5. `DELETE /posts/:id`
+
+* Delete a post
+
+#### 6. `PATCH /posts/:id/like`
+
+* Increment (or toggle) post likes
+
+---
+
+### 💬 COMMENT APIs
+
+#### 7. `GET /posts/:postId/comments`
+
+* Get all comments for a post (optionally nested)
+
+#### 8. `POST /posts/:postId/comments`
+
+* Add a comment to a post
+  Payload:
+
+  ```json
+  {
+    "content": "This is a comment",
+    "parentId": "optional-comment-id"
+  }
+  ```
+
+#### 9. `PUT /comments/:id`
+
+* Update a comment
+
+#### 10. `DELETE /comments/:id`
+
+* Delete a comment
+
+#### 11. `PATCH /comments/:id/like`
+
+* Increment (or toggle) comment likes
+
+---
+
+### 🏷 CATEGORY APIs
+
+#### 12. `GET /categories`
+
+* List all categories
+
+#### 13. `GET /categories/:id`
+
+* Get details of a category (including posts in it)
+
+#### 14. `POST /categories`
+
+* Create a new category
+  Payload:
+
+  ```json
+  {
+    "name": "Tech"
+  }
+  ```
+
+#### 15. `PUT /categories/:id`
+
+* Update category name
+
+#### 16. `DELETE /categories/:id`
+
+* Delete category
+
+---
+
+### (Optional) 🔍 ADVANCED or CUSTOM APIs
+
+#### 17. `GET /posts/popular`
+
+* Posts sorted by likes or engagement
+
+#### 18. `GET /posts/recent`
+
+* Posts sorted by creation date
+
+#### 19. `GET /comments/recent`
+
+* Recent comments across all posts
+
+#### 20. `POST /posts/:postId/assign-categories`
+
+* Assign multiple categories to a post
+  Payload:
+
+  ```json
+  {
+    "categoryIds": ["id1", "id2"]
+  }
+  ```
+
+---
+
+## 🚀 BONUS: Admin/User Support (if applicable)
+
+If you're adding **authentication** or **user roles**, you'd likely also want:
+
+* `GET /users/:id/posts`
+* `GET /users/:id/comments`
+* `GET /admin/posts/moderation`
+* Rate limiting or spam filters on comments/likes
+
+---
+
+## 🛠 Suggested Stack for These APIs
+
+| Part       | Technology Suggestion                                    |
+| ---------- | -------------------------------------------------------- |
+| Framework  | Node.js (Express/NestJS), FastAPI, or Next.js API routes |
+| ORM        | Prisma                                                   |
+| DB         | PostgreSQL                                               |
+| Auth       | JWT, NextAuth, or Firebase Auth                          |
+| Validation | Zod, Joi, or Yup                                         |
+
+---
+
+Would you like a detailed controller/service structure or sample code for one of these APIs?
