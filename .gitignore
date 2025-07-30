@@ -8,6 +8,7 @@ lerna-debug.log*
 .pnpm-debug.log*
 uploads
 
+apiList.txt
 
 node_modules
 .env
