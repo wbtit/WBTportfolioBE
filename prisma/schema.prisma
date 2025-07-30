@@ -108,6 +108,17 @@ model Category{
   @@map("category")
 }
 
+model CustomerData{
+  id                   String       @id @default(uuid()) @db.Uuid
+  name                 String
+  email                String
+  phone                String
+  message              String
+  createdAt            DateTime    @default(now())
+
+  @@map("customerdata")
+}
+
 enum ProjectType {
   INSTITUTE
   COMMERCIAL
