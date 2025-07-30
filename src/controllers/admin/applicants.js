@@ -3,6 +3,7 @@ import path from "path";
 import fs from 'fs'
 import mime from 'mime'
 import { cloudinary } from "../../config/cloudinaryConfig.js";
+import { uploadFilesToCloudinary } from "../../utils/uploadFilesToCloudinary.js";
 
 
 const addApplicant = async (req, res) => {
@@ -17,32 +18,8 @@ const addApplicant = async (req, res) => {
     });
   }
 
-  const uploadPromises=[]
-  req.resume.forEach(file=>{
-    const filePath=file.path
-
-    uploadPromises.push(
-      cloudinary.push(
-        cloudinary.uploader.upload(filePath,{
-          folder:"resume_files",
-          quality:'auto',
-          fetch_format:'auto',
-        }).then(result=>{
-          return {
-            public_id:result.public_id,
-            secureUrl:result.secureUrl,
-            filename:result.filename,
-            originalName:file.originalName,
-            path:`/uploads/Applicants/${file.filename}`
-          }
-        }).catch(error=>{
-          console.error("Cloudinary upload failed for file:", file.originalname, error)
-          return null;
-        })
-      )
-    )
-  })
-  const uploadeFiles= await Promise.all(uploadPromises)
+  
+  const uploadeFiles= await uploadFilesToCloudinary(req.files,"resume_files")
     const suuccessfullUploades=uploadeFiles.filter(detail=>detail!==null)
 
     if(suuccessfullUploades.length===0){

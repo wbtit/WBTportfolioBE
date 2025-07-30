@@ -2,7 +2,7 @@ import prisma from "../../db/prismaClient.js";
 import path from "path";
 import fs from 'fs'
 import mime from 'mime'
-import { cloudinary } from "../../config/cloudinaryConfig.js";
+import { uploadFilesToCloudinary } from "../../utils/uploadFilesToCloudinary.js";
 
 
 const addproject=async(req,res)=>{
@@ -23,33 +23,8 @@ const addproject=async(req,res)=>{
         })
     }
     
-    const uploadPromises=[]
-
-    req.files.forEach(file => {
-        const filePath= file.path 
-        
-
-        uploadPromises.push(
-          cloudinary.uploader.upload(filePath, { 
-                folder: 'project_images',
-                quality: 'auto',      
-                fetch_format: 'auto', 
-            }).then(result=>{
-            return {
-              public_id:result.public_id,
-              secureUrl:result.secure_url, 
-              fileName:file.filename, 
-              originalName:file.originalname,
-              path:`/uploads/projectFiles/${file.filename}` 
-            
-            }
-          }).catch(error=>{
-            console.error("Cloudinary upload failed for file:", file.originalname, error)
-                return null;
-          })
-        )
-    });
-    const uploadedImages= await Promise.all(uploadPromises)
+  
+    const uploadedImages= await uploadFilesToCloudinary(req.files,"project_images")
     const successfullUploads= uploadedImages.filter(detail=>detail!== null)
 
     if(successfullUploads.length === 0) {

@@ -4,6 +4,7 @@ import fs from 'fs'
 import mime from 'mime'
 
 import { cloudinary } from "../../config/cloudinaryConfig.js";
+import { uploadFilesToCloudinary } from "../../utils/uploadFilesToCloudinary.js";
 
 
 
@@ -18,33 +19,8 @@ const addJobRole = async (req, res) => {
     });
   }
 
-  const uplooadPromises=[]
 
-  req.files.forEach(file=>{
-    const filePath=file.path
-    uplooadPromises.push(
-      cloudinary.uploader.upload(filePath,{
-        folder:'jobRole_files',
-        quality:'auto',
-        fetch_format:'auto',
-        use_filename: true,        // Keep the original name
-          unique_filename: true,     // Or false, based on if you want unique names
-      }).then(result=>{
-        return {
-              public_id:result.public_id,
-              secureUrl:result.secure_url, 
-              fileName:file.filename, 
-              fileId:file.filename,
-              originalName:file.originalname,
-              path:`/uploads/JobRoleFiles/${file.filename}` 
-        }
-      }).catch(error=>{
-        console.error("Cloudinary upload failed for file:", file.originalname, error)
-                return null;
-      })
-    )
-  })
-  const uploadFiles= await Promise.all(uplooadPromises)
+  const uploadFiles= await uploadFilesToCloudinary(req.files,"jobrole_files")
   const successfullUploads= uploadFiles.filter(detail=>detail!==null)
 
   const addjobrole = await prisma.jobRole.create({
