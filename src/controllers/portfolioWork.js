@@ -25,13 +25,17 @@ const addportfolioWork=async(req,res)=>{
           fetch_format:'auto',
           use_filename: true,        // Keep the original name
           unique_filename: true,     // Or false, based on if you want unique names
+          
         }).then(result=>{
+          console.log(result)
           return{
             public_id:result.public_id,
             secureUrl:result.secure_url, // ✅ correct,
             filename:result.filename,
             originalName:file.originalName,
-            path:`/uploads/portfolioWorkFiles/${file.filename}`
+            fileId:file.filename,
+            path:`/uploads/portfolioWorkFiles/${file.filename}`,
+            id:result.id
           }
         }).catch(error=>{
           console.error("Cloudinary upload failed for file:", file.originalname, error)
@@ -160,6 +164,7 @@ const viewportfolioworkfiles = async (req, res) => {
     }
 
     const fileObject = portfoliowork.file.find((file) => file.id === fid); // ✅ images not files
+    console.log(fileObject)
 
     if (!fileObject) {
       return res.status(404).json({ message: "File not found in portfoliowork" });

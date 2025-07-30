@@ -34,6 +34,7 @@ const addJobRole = async (req, res) => {
               public_id:result.public_id,
               secureUrl:result.secure_url, 
               fileName:file.filename, 
+              fileId:file.filename,
               originalName:file.originalname,
               path:`/uploads/JobRoleFiles/${file.filename}` 
         }
