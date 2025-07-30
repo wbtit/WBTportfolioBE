@@ -10,7 +10,7 @@ import {
     viewJobrolefiles,
     updateJobRoleWithFile,
     deleteJobRole
-} from '../controllers/jobRole.js'
+} from '../controllers/admin/jobRole.js'
 
 const router=Router()
 

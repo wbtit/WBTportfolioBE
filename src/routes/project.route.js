@@ -11,7 +11,7 @@ import {
     viewProjectfiles,
     updateProjectWithFile,
     getSampleImages
-} from '../controllers/project.js'
+} from '../controllers/admin/project.js'
 
 const router=Router()
 

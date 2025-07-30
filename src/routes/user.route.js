@@ -1,6 +1,6 @@
 import { Authenticate } from "../middlewares/authmiddleware.js";
 import { Router } from "express";
-import {signup,login,resetPassword} from "../controllers/users.js"
+import {signup,login,resetPassword} from "../controllers/admin/users.js"
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 

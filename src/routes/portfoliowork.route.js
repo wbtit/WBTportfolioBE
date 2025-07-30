@@ -10,7 +10,7 @@ import {
     deleteportfoliowork,
     viewportfolioworkfiles,
     updateportfolioworkWithFile
-} from '../controllers/portfolioWork.js'
+} from '../controllers/admin/portfolioWork.js'
 
 const router=Router()
 

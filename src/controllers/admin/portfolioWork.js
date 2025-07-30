@@ -1,8 +1,8 @@
-import prisma from "../db/prismaClient.js";
+import prisma from "../../db/prismaClient.js";
 import path from "path";
 import fs from 'fs'
 import mime from 'mime'
-import { cloudinary } from "../config/cloudinaryConfig.js";
+import { cloudinary } from "../../config/cloudinaryConfig.js";
 
 
 const addportfolioWork=async(req,res)=>{
