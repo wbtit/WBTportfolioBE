@@ -1,4 +1,4 @@
-import prisma, { Prisma } from "../../db/prismaClient.js"
+import Prisma  from "../../db/prismaClient.js"
 import { updateCloudinaryFiles } from "../../utils/updateCloudinaryFiles.js"
 import { uploadFilesToCloudinary } from "../../utils/uploadFilesToCloudinary.js"
 
@@ -31,7 +31,6 @@ const getPosts=async(req,res)=>{
     const posts= await prisma.post.findMany({
         include:{
             comments:true,
-            categoryType:true,
             likes:true,
             createdAt:true
         }
