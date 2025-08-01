@@ -218,7 +218,7 @@ const updateProjectWithFile = async (req, res) => {
         ...(department && {department}),
         ...(type && { type }),
         ...(technologyused && { technologyused }),
-       ...(typeof status !== "undefined" && { status: status === "true" || status === true }),
+        ...(status && {status}),
         ...(newImages.length > 0 && { images: newImages }), // only update if new files uploaded
       },
     });
