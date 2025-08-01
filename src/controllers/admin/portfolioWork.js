@@ -14,7 +14,7 @@ const addportfolioWork=async(req,res)=>{
             data:null
         })
     }
-    const uploadeFiles= await uploadFilesToCloudinary(req.files,"portfolio_files")
+    const uploadeFiles= await uploadFilesToCloudinary(req.files,"portfolioWorkFiles")
     const suuccessfullUploades=uploadeFiles.filter(detail=>detail!==null)
 
     if(suuccessfullUploades.length===0){

@@ -12,7 +12,7 @@ const addpost=async(req,res)=>{
         })
     }
 
-    const uploadFiles= await uploadFilesToCloudinary(req.files,"blog_files")
+    const uploadFiles= await uploadFilesToCloudinary(req.files,"blogFiles")
     const successUploads=  uploadFiles.filter(detail=>detail!==null)
     const post= await Prisma.post.create({
         data:{

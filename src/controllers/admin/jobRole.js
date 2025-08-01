@@ -10,6 +10,9 @@ import { uploadFilesToCloudinary } from "../../utils/uploadFilesToCloudinary.js"
 
 const addJobRole = async (req, res) => {
   const { Role, location, type, qualification, status } = req.body;
+  console.log(req.body)
+
+
 
   if (!Role || !location || !type || !qualification || status === undefined) {
     return res.status(401).json({
@@ -20,7 +23,7 @@ const addJobRole = async (req, res) => {
   }
 
 
-  const uploadFiles= await uploadFilesToCloudinary(req.files,"jobrole_files")
+  const uploadFiles= await uploadFilesToCloudinary(req.files,"JobRoleFiles")
   const successfullUploads= uploadFiles.filter(detail=>detail!==null)
 
   const addjobrole = await prisma.jobRole.create({
@@ -47,6 +50,7 @@ const getAllJobRole=async(req,res)=>{
            applications:true 
         }
     })
+    console.log(getalljobrole)
     return res.status(200).json({
         message:"Fetched all jobroles",
         success:true,
