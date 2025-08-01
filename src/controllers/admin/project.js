@@ -201,7 +201,7 @@ const updateProjectWithFile = async (req, res) => {
     let newImages = [];
 
      if (req.files && req.files.length > 0) {
-    newImages = await updateCloudinaryFiles(existingProject.images, req.files, "project_images", "uploads/projectFiles");
+    newImages = await updateCloudinaryFiles(existingProject.images, req.files, "projectFiles", "uploads/projectFiles");
 
     if (newImages.length === 0) {
       console.warn("No images were uploaded successfully.");
