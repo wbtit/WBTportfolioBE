@@ -188,7 +188,7 @@ const updateJobRoleWithFile = async (req, res) => {
 
     let newImages = [];
      if (req.files && req.files.length > 0) {
-    newImages = await updateCloudinaryFiles(existingJobRole.jd, req.files, "jobRole_files", "uploads/jobRoleFiles");
+    newImages = await updateCloudinaryFiles(existingJobRole.jd, req.files, "JobRoleFiles", "uploads/jobRoleFiles");
 
     if (newImages.length === 0) {
       console.warn("No images were uploaded successfully.");
