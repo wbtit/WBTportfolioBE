@@ -3,6 +3,7 @@ import path from "path";
 import fs from 'fs'
 import mime from 'mime'
 import { uploadFilesToCloudinary } from "../../utils/uploadFilesToCloudinary.js";
+import { updateCloudinaryFiles } from "../../utils/updateCloudinaryFiles.js";
 
 
 const addportfolioWork=async(req,res)=>{
