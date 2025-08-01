@@ -25,7 +25,7 @@ const addproject=async(req,res)=>{
     }
     
   
-    const uploadedImages= await uploadFilesToCloudinary(req.files,"project_images")
+    const uploadedImages= await uploadFilesToCloudinary(req.files,"projectFiles")
     const successfullUploads= uploadedImages.filter(detail=>detail!== null)
 
     if(successfullUploads.length === 0) {

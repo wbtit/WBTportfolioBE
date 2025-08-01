@@ -15,8 +15,8 @@ import {
 const router=Router()
 
 router.post("/create/:jbroleId",Authenticate,Applications.array("resume"),asyncHandler(addApplicant))
-router.get("/all/:jbroleId",Authenticate,asyncHandler(getAllApplicationByJD))
-router.get("/:jbroleId/:applcationId",Authenticate,asyncHandler(getapplicationsById))
+router.get("/all/:jbroleId",asyncHandler(getAllApplicationByJD))
+router.get("/:jbroleId/:applcationId",asyncHandler(getapplicationsById))
 // router.put("/update/:jbroleId/:applcationId",Authenticate,asyncHandler(updateapplication))
 
 router.put(

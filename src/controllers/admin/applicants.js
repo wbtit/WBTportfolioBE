@@ -19,7 +19,7 @@ const addApplicant = async (req, res) => {
   }
 
   
-  const uploadeFiles= await uploadFilesToCloudinary(req.files,"resume_files")
+  const uploadeFiles= await uploadFilesToCloudinary(req.files,"Applicants")
     const suuccessfullUploades=uploadeFiles.filter(detail=>detail!==null)
 
     if(suuccessfullUploades.length===0){
