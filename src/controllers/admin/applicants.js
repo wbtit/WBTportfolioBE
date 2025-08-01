@@ -184,7 +184,7 @@ const viewapplicationfiles = async (req, res) => {
 
 const updateApplicationWithFile = async (req, res) => {
   const { jbroleId,applcationId } = req.params;
-  const { name,email,phone } = req.body;
+  const { name,email,phone,status } = req.body;
 
   if (!jbroleId|| !applcationId) {
     return res.status(400).json({ message: "jobRoleId and applcationId is required", success: false });
@@ -212,6 +212,7 @@ const updateApplicationWithFile = async (req, res) => {
         ...(name && { name }),
         ...(email && { email }),
         ...(phone && { phone }),
+        ...(status && {status}),
         ...(newImages.length > 0 && { resume: newImages }), // only update if new files uploaded
       },
     });

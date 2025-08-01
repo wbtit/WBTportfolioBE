@@ -15,8 +15,8 @@ import {
 const router=Router()
 
 router.post("/create",Authenticate,JDuploads.array("jd"),asyncHandler(addJobRole))
-router.get("/all",Authenticate,asyncHandler(getAllJobRole))
-router.get("/:jobRoleId",Authenticate,asyncHandler(getJobRoleById))
+router.get("/all",asyncHandler(getAllJobRole))
+router.get("/:jobRoleId",asyncHandler(getJobRoleById))
 // router.put("/update/:jobRoleId",Authenticate,asyncHandler(updatePortfolioWork))
 
 router.put(
