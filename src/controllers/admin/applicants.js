@@ -212,7 +212,7 @@ const updateApplicationWithFile = async (req, res) => {
         ...(name && { name }),
         ...(email && { email }),
         ...(phone && { phone }),
-        ...(status && {status}),
+        ...(typeof status !== "undefined" && { status: status === "true" || status === true }), // support both string/boolean
         ...(newImages.length > 0 && { resume: newImages }), // only update if new files uploaded
       },
     });
