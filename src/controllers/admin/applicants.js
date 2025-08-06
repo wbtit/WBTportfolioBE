@@ -198,7 +198,7 @@ const updateApplicationWithFile = async (req, res) => {
 
     let newImages = [];
      if (req.files && req.files.length > 0) {
-    newImages = await updateCloudinaryFiles(existingportfoliowork.resume, req.files, "resume_files", "uploads/portfolioWorkFiles");
+    newImages = await updateCloudinaryFiles(existingportfoliowork.resume, req.files, "Applicants", "uploads/portfolioWorkFiles");
 
     if (newImages.length === 0) {
       console.warn("No images were uploaded successfully.");
@@ -212,7 +212,7 @@ const updateApplicationWithFile = async (req, res) => {
         ...(name && { name }),
         ...(email && { email }),
         ...(phone && { phone }),
-        ...(status && {status}),
+        ...(typeof status !== "undefined" && { status: status === "true" || status === true }), // support both string/boolean
         ...(newImages.length > 0 && { resume: newImages }), // only update if new files uploaded
       },
     });
