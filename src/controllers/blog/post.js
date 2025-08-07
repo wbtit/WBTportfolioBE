@@ -28,11 +28,9 @@ const addpost=async(req,res)=>{
 }
 
 const getPosts=async(req,res)=>{
-    const posts= await prisma.post.findMany({
+    const posts= await Prisma.post.findMany({
         include:{
             comments:true,
-            likes:true,
-            createdAt:true
         }
     })
     return res.status(200).json({
@@ -67,7 +65,8 @@ const getPostById=async(req,res)=>{
 
 const updatePost=async(req,res)=>{
     const{postId}=req.params
-    const {title,content,}=req.body
+    const {title,content}=req.body
+    console.log("-=-==--=-=-=-=-=-=",title)
 
     if(!postId){
         return res.status(400).json({
@@ -75,7 +74,7 @@ const updatePost=async(req,res)=>{
             data:null
         })
     }
-    const existingPost= await prisma.post.findUnique({where:{id:postId}})
+    const existingPost= await Prisma.post.findUnique({where:{id:postId}})
 
     if(!existingPost){
         return res.status(404).json({message:"Post not found",data:null})
@@ -88,7 +87,7 @@ const updatePost=async(req,res)=>{
       console.warn("No images were uploaded successfully.");
     }
   }
-    const updatePost= await prisma.post.update({
+    const updatePost= await Prisma.post.update({
         where:{id:postId},
         data:{
             ...(title && {title}),
@@ -111,7 +110,7 @@ const deletePost= async(req,res)=>{
             data:null
         })
     }
-    const deletePost= await prisma.post.delete({
+    const deletePost= await Prisma.post.delete({
         where:{id:postId}
     })
     return res.status(200).json({
@@ -123,13 +122,13 @@ const deletePost= async(req,res)=>{
 const likePost=async(req,res)=>{
     const{postId}=req.params
     
-    if(!postId ||!likes){
+    if(!postId){
         return res.status(400).json({
             message:"Fields are empty",
             data:null
         })
     }
-    const likedPost= await prisma.post.update({
+    const likedPost= await Prisma.post.update({
         where:{id:postId},
         data:{
             likes:{increment:1}
