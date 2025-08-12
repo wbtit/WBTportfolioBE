@@ -4,7 +4,8 @@ import {signup,login,resetPassword} from "../controllers/admin/users.js"
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { getAllCustomerData,addCustomerData } from "../controllers/admin/customerData.js";
 
-const router= Router()
+
+const  router= Router()
 
 router.post("/signup",asyncHandler(signup))
 router.post("/login",asyncHandler(login))

@@ -60,7 +60,7 @@ const getPortfolioWorkById= async(req,res)=>{
     const getportfoliowork= await prisma.portfolioWork.findUnique({
         where:{id:portfolioWorkId},
     })
-    console.log(getportfoliowork)
+    //console.log(getportfoliowork)
     return res.status(200).json({
         message:"Fetched the portfolioWork by Id",
         success:true,
@@ -136,7 +136,7 @@ const viewportfolioworkfiles = async (req, res) => {
     }
 
     const fileObject = portfoliowork.file.find((file) => file.id === fid); // ✅ images not files
-    console.log(fileObject)
+    //console.log(fileObject)
 
     if (!fileObject) {
       return res.status(404).json({ message: "File not found in portfoliowork" });

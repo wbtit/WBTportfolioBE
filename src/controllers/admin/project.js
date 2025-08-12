@@ -239,7 +239,7 @@ const getSampleImages=async(req,res)=>{
     if(project.images && project.images.length>0){
       const file=project.images[0]
       const filePath = path.join(process.cwd(), file.path);
-
+       
       if (fs.existsSync(filePath)) {
             return {
               projectId: project.id,
@@ -257,7 +257,7 @@ const getSampleImages=async(req,res)=>{
         return null;
       })
       .filter(Boolean); // remove nulls (projects with no files)
-
+    //console.log("=-=-=-=-=-=-=-=-=-",sampleFiles)
     return res.status(200).json({
       message: "Sample files from each project",
       success: true,

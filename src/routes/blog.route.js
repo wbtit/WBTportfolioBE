@@ -25,7 +25,7 @@ const router= Router()
 router.post("/posts",Authenticate,blogFiles.array("files"),asyncHandler(addpost))
 router.get("/posts",asyncHandler(getPosts))
 router.get("/posts/:postId",asyncHandler(getPostById))
-router.put("/posts/:postId",Authenticate,asyncHandler(updatePost))
+router.put("/posts/:postId",blogFiles.array("files"),Authenticate,asyncHandler(updatePost))
 router.delete("/posts/:postId",Authenticate,asyncHandler(deletePost))
 router.patch("/posts/:postId/like",asyncHandler(likePost))
 
