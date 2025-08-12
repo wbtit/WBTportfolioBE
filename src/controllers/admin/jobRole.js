@@ -10,7 +10,7 @@ import { uploadFilesToCloudinary } from "../../utils/uploadFilesToCloudinary.js"
 
 const addJobRole = async (req, res) => {
   const { Role, location, type, qualification, status } = req.body;
-  console.log(req.body)
+  //console.log(req.body)
 
 
 
@@ -50,7 +50,7 @@ const getAllJobRole=async(req,res)=>{
            applications:true 
         }
     })
-    console.log(getalljobrole)
+    //console.log(getalljobrole)
     return res.status(200).json({
         message:"Fetched all jobroles",
         success:true,

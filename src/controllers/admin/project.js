@@ -257,7 +257,7 @@ const getSampleImages=async(req,res)=>{
         return null;
       })
       .filter(Boolean); // remove nulls (projects with no files)
-    console.log("=-=-=-=-=-=-=-=-=-",sampleFiles)
+    //console.log("=-=-=-=-=-=-=-=-=-",sampleFiles)
     return res.status(200).json({
       message: "Sample files from each project",
       success: true,

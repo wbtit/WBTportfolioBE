@@ -2,13 +2,14 @@ import prisma from "../../db/prismaClient.js";
 
 const addCustomerData=async(req,res)=>{
     const {name,email,phone,message}=req.body
+    //console.log(name,email,phone,message)
     if(!email||!name||!phone||!message){
         return res.status(400).json({
             message:"Fields are empty",
             data:null
         })
     }
-    const customer= await prisma.CustomerData.create({
+    const customer= await prisma.customerData.create({
         data:{
             name,
             email,
@@ -16,16 +17,16 @@ const addCustomerData=async(req,res)=>{
             message
         }
     })
-    if(!customer){
+    
         return res.status(200).json({
             message:"Data recorded successfully",
             data:customer
         })
-    }
+    
 }
 
 const getAllCustomerData= async(req,res)=>{
-    const userData= await prisma.CustomerData.findMany(
+    const userData= await prisma.customerData.findMany(
     )
     if(userData.length===0){
         return res.status(200).json({

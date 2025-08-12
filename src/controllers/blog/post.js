@@ -66,7 +66,7 @@ const getPostById=async(req,res)=>{
 const updatePost=async(req,res)=>{
     const{postId}=req.params
     const {title,content}=req.body
-    console.log("-=-==--=-=-=-=-=-=",title)
+    //console.log("-=-==--=-=-=-=-=-=",title)
 
     if(!postId){
         return res.status(400).json({
