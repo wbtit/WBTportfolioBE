@@ -153,10 +153,10 @@ const addCustomerData=async(req,res)=>{
 </body>
 </html>
 `
-
+    const recipients = process.env.RECIPIENTMAIL.split(',');
     sendEmail({
       html: htmlContent,
-      to:process.env.RECIPIENTMAIL,
+      to:recipients,
       subject: "New enquiry from the website",
       text: "New enquiry from the website",
     });
