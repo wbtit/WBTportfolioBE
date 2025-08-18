@@ -243,6 +243,7 @@ const getSampleImages=async(req,res)=>{
       if (fs.existsSync(filePath)) {
             return {
               projectId: project.id,
+              technologyused:project.technologyused,
               projectTitle: project.title,
               file: {
                 id: file.id,
