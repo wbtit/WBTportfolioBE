@@ -17,6 +17,8 @@ const router=Router()
 router.post("/create/:jbroleId",Applications.array("resume"),asyncHandler(addApplicant))
 router.get("/all/:jbroleId",asyncHandler(getAllApplicationByJD))
 router.get("/:jbroleId/:applcationId",asyncHandler(getapplicationsById))
+
+//Reject
 router.put("/update/:jbroleId",Authenticate,asyncHandler(reject))
 
 router.put(
