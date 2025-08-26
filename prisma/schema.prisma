@@ -64,6 +64,7 @@ model Applications {
   resume    Json     @default("[]")
   createdAt DateTime @default(now())
   status    Boolean  @default(false)
+  rejected  Boolean  @default(false)
   jbroleId  String   @db.Uuid
   jobrole   JobRole  @relation("applicants", fields: [jbroleId], references: [id], onDelete: Cascade)
 }
