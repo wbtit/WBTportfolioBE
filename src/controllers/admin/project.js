@@ -7,8 +7,8 @@ import { updateCloudinaryFiles } from "../../utils/updateCloudinaryFiles.js";
 
 
 const addproject=async(req,res)=>{
-    const{title,description,location,type,technologyused,status,department}=req.body
-    if(!title||!description||!location||!type||!technologyused||!status||!department){
+    const{title,description,location,type,technologyused,status,department,designingSoftware}=req.body
+    if(!title||!description||!location||!type||!technologyused||!status||!department||designingSoftware){
         return res.status(400).json({
             message:"Feilds are empty",
             success:false,
@@ -44,6 +44,7 @@ const addproject=async(req,res)=>{
             department,
             type,
             technologyused,
+            designingSoftware,
              status,
             images:successfullUploads
         }
@@ -185,7 +186,7 @@ const viewProjectfiles = async (req, res) => {
 
 const updateProjectWithFile = async (req, res) => {
   const { projectId } = req.params;
-  const { title, description, location, type, technologyused, status,department } = req.body;
+  const { title, description, location, type, technologyused, status,department,designingSoftware} = req.body;
 
   if (!projectId) {
     return res.status(400).json({ message: "projectId is required", success: false });
@@ -218,6 +219,7 @@ const updateProjectWithFile = async (req, res) => {
         ...(department && {department}),
         ...(type && { type }),
         ...(technologyused && { technologyused }),
+        ...(designingSoftware && {designingSoftware}),
         ...(status && {status}),
         ...(newImages.length > 0 && { images: newImages }), // only update if new files uploaded
       },
@@ -244,6 +246,7 @@ const getSampleImages=async(req,res)=>{
             return {
               projectId: project.id,
               technologyused:project.technologyused,
+              designingSoftware:project.designingSoftware,
               projectTitle: project.title,
               file: {
                 id: file.id,
