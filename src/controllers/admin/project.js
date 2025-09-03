@@ -187,7 +187,7 @@ const viewProjectfiles = async (req, res) => {
 
 const updateProjectWithFile = async (req, res) => {
   const { projectId } = req.params;
-  const { title, description, location, type, technologyused, status,department,designingSoftware} = req.body;
+  const { title, description, location, type, technologyused, status,department,designingSoftware,otherType} = req.body;
 
   if (!projectId) {
     return res.status(400).json({ message: "projectId is required", success: false });
