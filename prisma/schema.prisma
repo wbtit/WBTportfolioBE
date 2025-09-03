@@ -20,15 +20,16 @@ model User {
 }
 
 model Project {
-  id              String        @id @default(uuid()) @db.Uuid
-  title           String        @unique
-  description     String
-  department      DEPT          @default(PEMB)
-  location        String
-  type            ProjectType
-  technologyused  String
-  status          ProjectStatus
-  images          Json          @default("[]")  @db.JsonB 
+  id                String        @id @default(uuid()) @db.Uuid
+  title             String        @unique
+  description       String
+  department        DEPT          @default(PEMB)
+  location          String
+  type              ProjectType
+  technologyused    String
+  designingSoftware String?
+  status            ProjectStatus
+  images            Json          @default("[]")  @db.JsonB
 
   @@map("project")
 }
@@ -59,11 +60,12 @@ model JobRole {
 model Applications {
   id        String   @id @default(uuid()) @db.Uuid
   name      String
-  email     String
+  email     String    @unique
   phone     String
   resume    Json     @default("[]")
   createdAt DateTime @default(now())
   status    Boolean  @default(false)
+  rejected  Boolean  @default(false)
   jbroleId  String   @db.Uuid
   jobrole   JobRole  @relation("applicants", fields: [jbroleId], references: [id], onDelete: Cascade)
 }

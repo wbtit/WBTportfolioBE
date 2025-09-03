@@ -6,7 +6,7 @@ import {
     addApplicant,
     getAllApplicationByJD,
     getapplicationsById,
-    // updateapplication,
+    reject,
     viewapplicationfiles,
     updateApplicationWithFile,
     deleteApplication
@@ -17,7 +17,9 @@ const router=Router()
 router.post("/create/:jbroleId",Applications.array("resume"),asyncHandler(addApplicant))
 router.get("/all/:jbroleId",asyncHandler(getAllApplicationByJD))
 router.get("/:jbroleId/:applcationId",asyncHandler(getapplicationsById))
-// router.put("/update/:jbroleId/:applcationId",Authenticate,asyncHandler(updateapplication))
+
+//Reject
+router.put("/update/:jbroleId",Authenticate,asyncHandler(reject))
 
 router.put(
   "/update/:jbroleId/:applcationId",
