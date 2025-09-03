@@ -7,8 +7,8 @@ import { updateCloudinaryFiles } from "../../utils/updateCloudinaryFiles.js";
 
 
 const addproject=async(req,res)=>{
-    const{title,description,location,type,technologyused,status,department,designingSoftware}=req.body
-    if(!title||!description||!location||!type||!technologyused||!status||!department||!designingSoftware){
+    const{title,description,location,type,technologyused,status,department,designingSoftware,otherType}=req.body
+    if(!title||!description||!location||!type||!technologyused||!status||!department||!designingSoftware||!otherType){
         return res.status(400).json({
             message:"Feilds are empty",
             success:false,
@@ -43,6 +43,7 @@ const addproject=async(req,res)=>{
             location,
             department,
             type,
+            otherType,
             technologyused,
             designingSoftware,
              status,
@@ -221,6 +222,7 @@ const updateProjectWithFile = async (req, res) => {
         ...(technologyused && { technologyused }),
         ...(designingSoftware && {designingSoftware}),
         ...(status && {status}),
+        ...(otherType && {otherType}),
         ...(newImages.length > 0 && { images: newImages }), // only update if new files uploaded
       },
     });
@@ -247,6 +249,7 @@ const getSampleImages=async(req,res)=>{
               projectId: project.id,
               technologyused:project.technologyused,
               designingSoftware:project.designingSoftware,
+              otherType:project.otherType,
               projectTitle: project.title,
               file: {
                 id: file.id,

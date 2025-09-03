@@ -26,6 +26,7 @@ model Project {
   department        DEPT          @default(PEMB)
   location          String
   type              ProjectType
+  otherType         String?
   technologyused    String
   designingSoftware String?
   status            ProjectStatus
