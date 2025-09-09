@@ -8,7 +8,7 @@ import { updateCloudinaryFiles } from "../../utils/updateCloudinaryFiles.js";
 
 const addproject=async(req,res)=>{
     const{title,description,location,type,technologyused,status,department,designingSoftware,otherType}=req.body
-    if(!title||!description||!location||!type||!technologyused||!status||!department||!designingSoftware||!otherType){
+    if(!title||!description||!location||!type||!technologyused||!status||!department){
         return res.status(400).json({
             message:"Feilds are empty",
             success:false,
