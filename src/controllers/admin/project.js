@@ -239,32 +239,35 @@ const getSampleImages=async(req,res)=>{
       where: { department },
     });
 
-  const sampleFiles= projects.map(project=>{
-    if(project.images && project.images.length>0){
-      const file=project.images[0]
-      const filePath = path.join(process.cwd(), file.path);
-       
-      if (fs.existsSync(filePath)) {
-            return {
-              projectId: project.id,
-              technologyused:project.technologyused,
-              designingSoftware:project.designingSoftware,
-              otherType:project.otherType,
-              projectTitle: project.title,
-              file: {
-                id: file.id,
-                filename: file.filename,
-                path: file.path,
-                url: file.path,
-                secureUrl:file.secureUrl
-              },
-            };
-          }
-        }
-        return null;
-      })
-      .filter(Boolean); // remove nulls (projects with no files)
-    //console.log("=-=-=-=-=-=-=-=-=-",sampleFiles)
+const sampleFiles = projects.map(project => {
+  if (project.images && project.images.length > 0) {
+    const file = project.images[0];
+
+    // remove leading slash
+    const relativePath = file.path.startsWith("/") ? file.path.slice(1) : file.path;
+    const filePath = path.join(process.cwd(), relativePath);
+
+    const fileExists = fs.existsSync(filePath);
+
+    return {
+      projectId: project.id,
+      technologyused: project.technologyused,
+      designingSoftware: project.designingSoftware,
+      otherType: project.otherType,
+      projectTitle: project.title,
+      file: {
+        id: file.id,
+        filename: file.filename,
+        path: file.path,
+        url: fileExists ? `/uploads/${file.filename}` : file.secureUrl,  
+        secureUrl: file.secureUrl
+      },
+    };
+  }
+  return null;
+}).filter(Boolean);
+ // remove nulls (projects with no files)
+    console.log("-=-=--=--==-",sampleFiles)
     return res.status(200).json({
       message: "Sample files from each project",
       success: true,
