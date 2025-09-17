@@ -239,7 +239,7 @@ const getSampleImages=async(req,res)=>{
       where: { department },
     });
 
-const sampleFiles = projects.map(project => {
+  const sampleFiles = projects.map(project => {
   if (project.images && project.images.length > 0) {
     const file = project.images[0];
 
@@ -265,9 +265,8 @@ const sampleFiles = projects.map(project => {
     };
   }
   return null;
-}).filter(Boolean);
- // remove nulls (projects with no files)
-    console.log("-=-=--=--==-",sampleFiles)
+}).filter(Boolean); // remove nulls (projects with no files)
+    //console.log("=-=-=-=-=-=-=-=-=-",sampleFiles)
     return res.status(200).json({
       message: "Sample files from each project",
       success: true,
