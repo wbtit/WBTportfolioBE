@@ -177,7 +177,7 @@ const updateportfolioworkWithFile = async (req, res) => {
 
     let newImages = [];
       if (req.files && req.files.length > 0) {
-    newImages = await updateCloudinaryFiles(existingportfoliowork.file, req.files, "portfolioWorkFiles", "uploads/portfolioWorkFiles");
+    newImages = await updateCloudinaryFiles(existingportfoliowork.file, req.files, "portfolioWorkFiles");
 
     if (newImages.length === 0) {
       console.warn("No images were uploaded successfully.");
