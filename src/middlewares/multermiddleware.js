@@ -44,3 +44,6 @@ export const Applications=createMulterUploader("uploads/Applicants",UploadedAppl
 
 export const UploadedBlogFiles={}
 export const blogFiles=createMulterUploader("uploads/blogFiles",UploadedBlogFiles)
+
+export const UploadedLeadershipMap={}
+export const leadershipPics=createMulterUploader("uploads/leadershipPics",UploadedLeadershipMap)

@@ -133,3 +133,14 @@ enum DEPT{
   PEMB
   STRUCTURAL
 }
+
+model Leadership {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  designation String
+  bio         String
+  profilePic  Json     @default("[]")
+  socialLinks Json     @default("[]")
+
+  @@map("leadership")
+}
