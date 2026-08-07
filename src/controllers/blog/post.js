@@ -81,7 +81,7 @@ const updatePost=async(req,res)=>{
     }
     let newImages=[];
     if (req.files && req.files.length > 0) {
-    newImages = await updateCloudinaryFiles(existingPost.files, req.files, "blog_files", "uploads/blogFiles");
+    newImages = await updateCloudinaryFiles(existingPost.files, req.files, "blogFiles");
 
     if (newImages.length === 0) {
       console.warn("No images were uploaded successfully.");

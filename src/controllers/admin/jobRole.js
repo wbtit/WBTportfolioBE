@@ -5,6 +5,7 @@ import mime from 'mime'
 
 import { cloudinary } from "../../config/cloudinaryConfig.js";
 import { uploadFilesToCloudinary } from "../../utils/uploadFilesToCloudinary.js";
+import { updateCloudinaryFiles } from "../../utils/updateCloudinaryFiles.js";
 
 
 
@@ -147,7 +148,8 @@ const viewJobrolefiles = async (req, res) => {
       return res.status(404).json({ message: "jobrole not found" });
     }
 
-    const fileObject = jobrole.file.find((file) => file.id === fid); // ✅ images not files
+    // Fix: Access jobrole.jd instead of jobrole.file
+    const fileObject = jobrole.jd ? jobrole.jd.find((file) => file.fileId === fid || file.fileName === fid || file.id === fid) : null; 
 
     if (!fileObject) {
       return res.status(404).json({ message: "File not found in jobrole" });
@@ -188,7 +190,7 @@ const updateJobRoleWithFile = async (req, res) => {
 
     let newImages = [];
      if (req.files && req.files.length > 0) {
-    newImages = await updateCloudinaryFiles(existingJobRole.jd, req.files, "JobRoleFiles", "uploads/jobRoleFiles");
+    newImages = await updateCloudinaryFiles(existingJobRole.jd, req.files, "JobRoleFiles");
 
     if (newImages.length === 0) {
       console.warn("No images were uploaded successfully.");
