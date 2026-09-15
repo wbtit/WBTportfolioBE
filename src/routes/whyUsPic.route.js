@@ -6,8 +6,9 @@ import { whyUsPics } from "../middlewares/multermiddleware.js";
 import {
   addWhyUsPic,
   getAllWhyUsPic,
-  deleteWhyUsPic,
-  getWhyUsPicById
+  getWhyUsPicById,
+  updateWhyUsPic,
+  deleteWhyUsPic
 } from "../controllers/admin/whyUsPic.js";
 
 const router = Router();
@@ -15,7 +16,7 @@ const router = Router();
 router.post(
   "/create",
   Authenticate,
-  whyUsPics.array("image",10),
+  whyUsPics.array("image", 50),
   asyncHandler(addWhyUsPic)
 );
 
@@ -27,6 +28,13 @@ router.get(
 router.get(
   "/:id",
   asyncHandler(getWhyUsPicById)
+);
+
+router.put(
+  "/update/:id",
+  Authenticate,
+  whyUsPics.array("image", 50),
+  asyncHandler(updateWhyUsPic)
 );
 
 router.delete(

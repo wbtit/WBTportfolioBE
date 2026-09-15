@@ -86,6 +86,7 @@ const addWhyUsPic = async (req, res) => {
 
 const getAllWhyUsPic = async (req, res) => {
   try {
+
     const whyUsPic = await prisma.whyUsPic.findMany({
       orderBy: {
         order: "asc",
@@ -99,6 +100,7 @@ const getAllWhyUsPic = async (req, res) => {
     });
 
   } catch (error) {
+
     console.log(error);
 
     return res.status(500).json({
@@ -108,8 +110,11 @@ const getAllWhyUsPic = async (req, res) => {
     });
   }
 };
+
+
 const getWhyUsPicById = async (req, res) => {
   try {
+
     const { id } = req.params;
 
     if (!id) {
@@ -120,20 +125,19 @@ const getWhyUsPicById = async (req, res) => {
       });
     }
 
-//     const idNumber = parseInt(id, 10);
-// console.log(id);
+    const idNumber = parseInt(id, 10);
 
-//     if (isNaN(idNumber)) {
-//       return res.status(400).json({
-//         message: "Invalid id",
-//         success: false,
-//         data: null,
-//       });
-//     }
+    if (isNaN(idNumber)) {
+      return res.status(400).json({
+        message: "Invalid id",
+        success: false,
+        data: null,
+      });
+    }
 
     const whyUsPic = await prisma.whyUsPic.findUnique({
       where: {
-        id: id,
+        id: idNumber,
       },
     });
 
@@ -152,6 +156,7 @@ const getWhyUsPicById = async (req, res) => {
     });
 
   } catch (error) {
+
     console.log(error);
 
     return res.status(500).json({
@@ -162,8 +167,10 @@ const getWhyUsPicById = async (req, res) => {
   }
 };
 
-const deleteWhyUsPic = async (req, res) => {
+
+const updateWhyUsPic = async (req, res) => {
   try {
+
     const { id } = req.params;
 
     if (!id) {
@@ -174,11 +181,127 @@ const deleteWhyUsPic = async (req, res) => {
       });
     }
 
-    
+
+    const existingWhyUsPic = await prisma.whyUsPic.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!existingWhyUsPic) {
+      return res.status(404).json({
+        message: "WhyUsPic not found",
+        success: false,
+        data: null,
+      });
+    }
+
+    const { tag, title, description, order } = req.body;
+
+    const updateData = {};
+
+    if (tag !== undefined) {
+      updateData.tag = tag;
+    }
+
+    if (title !== undefined) {
+      updateData.title = title;
+    }
+
+    if (description !== undefined) {
+      updateData.description = description;
+    }
+
+    let existingImages = [];
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) {
+        existingImages = [...req.body.image];
+      } else {
+        existingImages = [req.body.image];
+      }
+    }
+
+    if (req.files && req.files.length > 0) {
+      const uploadedFiles = await uploadFilesToCloudinary(
+        req.files,
+        "whyUsPic"
+      );
+
+      const uploadedImages = uploadedFiles.map(
+        (file) => file.secureUrl
+      );
+
+      if (uploadedImages.some((file) => !file)) {
+        return res.status(400).json({
+          message: "Failed to upload one or more images",
+          success: false,
+          data: null,
+        });
+      }
+
+      updateData.image = [...existingImages, ...uploadedImages];
+    } else if (existingImages.length > 0) {
+      updateData.image = existingImages;
+    } else {
+      return res.status(400).json({
+        message: "Please provide at least one image",
+        success: false,
+        data: null,
+      });
+    }
+
+    const updatedWhyUsPic = await prisma.whyUsPic.update({
+      where: {
+        id: id,
+      },
+      data: updateData,
+    });
+
+    return res.status(200).json({
+      message: "WhyUsPic updated successfully",
+      success: true,
+      data: updatedWhyUsPic,
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      message: "Error updating WhyUsPic",
+      success: false,
+      data: null,
+    });
+  }
+};
+
+
+const deleteWhyUsPic = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({
+        message: "Please provide id",
+        success: false,
+        data: null,
+      });
+    }
+
+    const idNumber = parseInt(id, 10);
+
+    if (isNaN(idNumber)) {
+      return res.status(400).json({
+        message: "Invalid id",
+        success: false,
+        data: null,
+      });
+    }
 
     const deleteWhyUsPic = await prisma.whyUsPic.delete({
       where: {
-        id: id,
+        id: idNumber,
       },
     });
 
@@ -189,6 +312,7 @@ const deleteWhyUsPic = async (req, res) => {
     });
 
   } catch (error) {
+
     console.log(error);
 
     return res.status(500).json({
@@ -204,5 +328,6 @@ export {
   addWhyUsPic,
   getAllWhyUsPic,
   getWhyUsPicById,
+  updateWhyUsPic,
   deleteWhyUsPic,
 };
