@@ -6,16 +6,6 @@ const uploadFilesToCloudinary = async (files, folder = "uploads") => {
   const uploadPromises = files.map(async (file) => {
     const filePath = file.path;
 
-    // target dir for server backup
-    const localDir = path.join("public", folder);
-    if (!fs.existsSync(localDir)) {
-      fs.mkdirSync(localDir, { recursive: true });
-    }
-    const localPath = path.join(localDir, file.filename);
-
-    // ✅ copy instead of move
-    fs.copyFileSync(filePath, localPath);
-
     const doUpload = (uploadPath, options) => {
       if (file.mimetype.startsWith("video/")) {
         return new Promise((resolve, reject) => {
@@ -37,7 +27,7 @@ const uploadFilesToCloudinary = async (files, folder = "uploads") => {
     };
 
     try {
-      const result = await doUpload(localPath, {
+      const result = await doUpload(filePath, {
         folder,
         quality: "auto",
         fetch_format: "auto",
@@ -47,11 +37,11 @@ const uploadFilesToCloudinary = async (files, folder = "uploads") => {
 
       return {
         public_id: result.public_id,
-        secureUrl: result.secure_url, // ✅ Cloudinary URL
+        secureUrl: result.secure_url,
         fileName: file.filename,
         fileId: file.filename,
         originalName: file.originalname,
-        path: `/uploads/${folder}/${file.filename}`, // ✅ Server path
+        path: result.secure_url, // Using Cloudinary URL as the path since it's not stored locally
         resourceType: result.resource_type,
       };
     } catch (error) {
@@ -63,9 +53,14 @@ const uploadFilesToCloudinary = async (files, folder = "uploads") => {
         fileName: file.filename,
         fileId: file.filename,
         originalName: file.originalname,
-        path: `/uploads/${folder}/${file.filename}`, // ✅ Server path always exists now
+        path: null,
         resourceType: file.mimetype.split("/")[0],
       };
+    } finally {
+      // Remove the temporary multer file from the local system
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
     }
   });
 
