@@ -47,3 +47,10 @@ export const blogFiles=createMulterUploader("uploads/blogFiles",UploadedBlogFile
 
 export const UploadedLeadershipMap={}
 export const leadershipPics=createMulterUploader("uploads/leadershipPics",UploadedLeadershipMap)
+
+export const UploadedWhyUsPicMap = {};
+export const whyUsPics = createMulterUploader(
+  "uploads/WhyUsPic",
+  UploadedWhyUsPicMap
+);
+

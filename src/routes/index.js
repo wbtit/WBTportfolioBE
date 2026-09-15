@@ -6,7 +6,7 @@ import { JobRole } from "./jobRole.route.js";
 import { Application } from "./applicantions.route.js";
 import {blog} from "./blog.route.js"
 import { Leadership } from "./leadership.route.js";
-
+import { WhyUsPic } from "./whyUsPic.route.js";
 const routes= Router()
 
 routes.use("/user",User)
@@ -16,5 +16,6 @@ routes.use("/jobrole",JobRole)
 routes.use("/applications",Application)
 routes.use("/blog",blog)
 routes.use("/leadership", Leadership)
+routes.use("/whyUsPic", WhyUsPic)
 
 export {routes}

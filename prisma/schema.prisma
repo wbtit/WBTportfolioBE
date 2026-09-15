@@ -144,3 +144,14 @@ model Leadership {
 
   @@map("leadership")
 }
+model WhyUsPic {
+  id          String      @id @default(uuid())
+  image       Json          @default("[]")  @db.JsonB
+  tag         String
+  title       String
+  description String   @db.Text
+  order       Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
